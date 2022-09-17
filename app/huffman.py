@@ -65,8 +65,8 @@ def lue_tiedosto(tiedosto_nimi: str) -> None:
     return teksti
 
 
-def pakkaa(tiedosto_nimi: str):
-    """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan.
+def pakkaa(tiedosto_nimi: str) -> dict:
+    """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan. Tulostaa ja palauttaa sanakirjan.
 
     Args:
         tiedosto_nimi (str): Käsiteltävän tiedoston nimi.
@@ -79,12 +79,13 @@ def pakkaa(tiedosto_nimi: str):
     for merkki in merkit:
         print(f"{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}")
 
+    return merkit
+
 
 def main():
     pakattava_tiedosto = os.path.join(
         os.path.dirname(__file__), "tests", "jfk_virkaanastujaispuhe.txt"
     )
-    print(pakattava_tiedosto)
     if len(sys.argv) > 1:
         pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
     pakkaa(pakattava_tiedosto)

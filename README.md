@@ -1,6 +1,8 @@
 # Aineopintojen harjoitustyö: Tietorakenteet ja algoritmit (periodi I), Laboratoriotyöskentely
 
+![CI Status](https://github.com/tuukkalai/tiralabra/workflows/CI/badge.svg)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 
 ## Esitietoja projektista
 

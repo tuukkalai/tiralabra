@@ -20,7 +20,8 @@ def esiintyvyys_laskin(syote: str) -> list:
             sanakirja[i] = 1
     return sorted(sanakirja.items(), key=lambda item: item[1], reverse=True)
 
-def huffman_binaari(solmu, binaari='') -> dict:
+
+def huffman_binaari(solmu, binaari="") -> dict:
     """Binaarin muodostus aloitetaan saadusta Huffman puun solmusta. Tämän jälkeen puussa liikutaan seuraavalle tasolle kohti lehtiä, lisäten puun vasemmanpuoleisten haarojen solmujen binääriin luku 0, ja oikeanpuoleisten haarojen solmujen binääriin luku 1.
 
     Args:
@@ -34,9 +35,10 @@ def huffman_binaari(solmu, binaari='') -> dict:
         return {solmu: binaari}
     (v, o) = (solmu[0], solmu[1])
     taulukko = dict()
-    taulukko.update(huffman_binaari(v, binaari + '0'))
-    taulukko.update(huffman_binaari(o, binaari + '1'))
+    taulukko.update(huffman_binaari(v, binaari + "0"))
+    taulukko.update(huffman_binaari(o, binaari + "1"))
     return taulukko
+
 
 def huffman_puu(solmut: dict):
     while len(solmut) > 1:
@@ -47,6 +49,7 @@ def huffman_puu(solmut: dict):
         solmut.append((solmu, esiintyvyys1 + esiintyvyys2))
         solmut = sorted(solmut, key=lambda x: x[1], reverse=True)
     return huffman_binaari(solmut[0][0])
+
 
 def lue_tiedosto(tiedosto_nimi: str) -> None:
     """Lue annettu tiedosto.
@@ -61,6 +64,7 @@ def lue_tiedosto(tiedosto_nimi: str) -> None:
         teksti = tiedosto.read()
     return teksti
 
+
 def pakkaa(tiedosto_nimi: str):
     """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan.
 
@@ -73,14 +77,18 @@ def pakkaa(tiedosto_nimi: str):
     bitti_koodi_sanakirja = huffman_puu(solmut)
 
     for merkki in merkit:
-        print(f'{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}')
+        print(f"{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}")
+
 
 def main():
-    pakattava_tiedosto = os.path.join(os.path.dirname(__file__), 'tests', 'jfk_virkaanastujaispuhe.txt')
+    pakattava_tiedosto = os.path.join(
+        os.path.dirname(__file__), "tests", "jfk_virkaanastujaispuhe.txt"
+    )
     print(pakattava_tiedosto)
     if len(sys.argv) > 1:
         pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
     pakkaa(pakattava_tiedosto)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

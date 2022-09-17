@@ -2,14 +2,14 @@ import os
 import sys
 
 
-def esiintyvyys_laskin(syote: str) -> dict:
-    """Esiintyvyys laskin palauttaa sanakirjan syötteen kirjaimista järjestettynä esiintymistiheydeltään suurimmasta pienimpään.
+def esiintyvyys_laskin(syote: str) -> list:
+    """Esiintyvyys laskin palauttaa listan tupleja syötteen kirjaimista järjestettynä esiintymistiheydeltään suurimmasta pienimpään.
 
     Args:
         syote (str): Pakattava syöte
 
     Returns:
-        dict: Arvojen mukaan suurimmasta pienimpään järjestetty sanakirja
+        dict: Arvojen mukaan suurimmasta pienimpään järjestetty lista
     """
     sanakirja = {}
 
@@ -76,7 +76,8 @@ def pakkaa(tiedosto_nimi: str):
         print(f'{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}')
 
 def main():
-    pakattava_tiedosto = os.path.join(os.getcwd(), 'test', 'jfk_virkaanastujaispuhe.txt')
+    pakattava_tiedosto = os.path.join(os.path.dirname(__file__), 'tests', 'jfk_virkaanastujaispuhe.txt')
+    print(pakattava_tiedosto)
     if len(sys.argv) > 1:
         pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
     pakkaa(pakattava_tiedosto)

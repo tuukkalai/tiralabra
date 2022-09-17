@@ -4,7 +4,18 @@
 [![codecov](https://codecov.io/gh/tuukkalai/tiralabra/branch/main/graph/badge.svg?token=0USONHIIIX)](https://codecov.io/gh/tuukkalai/tiralabra)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-## Esitietoja projektista
+## Dokumentaatio
+
+### Viikkoraportit
+
+- [Viikko 1](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko1.md)
+- [Viikko 2](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko2.md)
+
+### Muut
+
+- [Määrittelydokumentti](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/maarittelydokumentti.md)
+
+## Projektin riippuvuudet
 
 Sovelluksen käyttämät tiedostot sijaitsevat hakemistossa `app`.
 
@@ -49,7 +60,3 @@ poetry run invoke coverage-html
 ```sh
 poetry run invoke format
 ```
-
-## Viikkoraportit
-
-- [Viikko 1](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko1.md)

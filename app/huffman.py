@@ -2,6 +2,10 @@ import os
 import sys
 
 
+# Globaali muuttuja, johon kirjoitetaan pakatun tiedoston data
+koodattava_teksti = ''
+
+
 def esiintyvyys_laskin(syote: str) -> list:
     """Esiintyvyys laskin palauttaa listan tupleja syötteen kirjaimista järjestettynä esiintymistiheydeltään suurimmasta pienimpään.
 
@@ -31,10 +35,16 @@ def huffman_binaari(solmu, binaari="") -> dict:
     Returns:
         dict: Palauttaa sanakirjana merkit ja niitä vastaavat Huffman koodin antamat binäärimuotoiset esitykset.
     """
+    global koodattava_teksti
+
     if type(solmu) is str:
+        koodattava_teksti += '1'
+        koodattava_teksti += format(ord(solmu), '08b')
+        print(solmu, ' ', binaari)
         return {solmu: binaari}
     (v, o) = (solmu[0], solmu[1])
     taulukko = dict()
+    koodattava_teksti += '0'
     taulukko.update(huffman_binaari(v, binaari + "0"))
     taulukko.update(huffman_binaari(o, binaari + "1"))
     return taulukko
@@ -79,17 +89,13 @@ def pakkaa(tiedosto_nimi: str) -> dict:
     for merkki in merkit:
         print(f"{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}")
 
-    return merkit
-
-
-def main():
-    pakattava_tiedosto = os.path.join(
-        os.path.dirname(__file__), "tests", "jfk_virkaanastujaispuhe.txt"
-    )
-    if len(sys.argv) > 1:
-        pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
-    pakkaa(pakattava_tiedosto)
+    return bitti_koodi_sanakirja
 
 
 if __name__ == "__main__":
-    main()
+    pakattava_tiedosto = os.path.join(
+        os.path.dirname(__file__), "tests", "simple_test.txt"
+    )
+    if len(sys.argv) > 1:
+        pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
+    print(pakkaa(pakattava_tiedosto))

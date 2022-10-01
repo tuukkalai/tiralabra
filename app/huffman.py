@@ -98,6 +98,10 @@ def lisaa_pakattu_teksti(teksti: str, sanakirja: dict) -> None:
         koodattava_teksti += sanakirja[c]
 
 
+def printtaa_koodattava_teksti() -> str:
+    return koodattava_teksti
+
+
 def pakkaa(tiedosto_nimi: str) -> str:
     """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan. Tulostaa ja palauttaa sanakirjan.
 
@@ -116,8 +120,6 @@ def pakkaa(tiedosto_nimi: str) -> str:
     # print(bitti_koodi_sanakirja)
     # print(koodattava_teksti)
     yhdista_sanakirja_ja_teksti(teksti, bitti_koodi_sanakirja)
-
-    # print(koodattava_teksti)
 
     int_arr = []
     for b in range(0, len(koodattava_teksti), 8):

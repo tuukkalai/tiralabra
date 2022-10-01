@@ -3,7 +3,7 @@ import sys
 
 
 # Globaali muuttuja, johon kirjoitetaan pakatun tiedoston data
-koodattava_teksti = ''
+koodattava_teksti = ""
 
 
 def esiintyvyys_laskin(syote: str) -> list:
@@ -27,6 +27,7 @@ def esiintyvyys_laskin(syote: str) -> list:
 
 def huffman_binaari(solmu, binaari="") -> dict:
     """Binaarin muodostus aloitetaan saadusta Huffman puun solmusta. Tämän jälkeen puussa liikutaan seuraavalle tasolle kohti lehtiä, lisäten puun vasemmanpuoleisten haarojen solmujen binääriin luku 0, ja oikeanpuoleisten haarojen solmujen binääriin luku 1.
+    Pakattavan tekstin merkkien binäärisanakirjaa muodostettaessa luodaan samalla postorder traversal algoritmia noudattaen Huffman puun esitys pakattavaan tiedostoon tallennettavaksi, muuttujaan `koodattava_teksti`.
 
     Args:
         solmu (tuple tai str): Annetun solmun merkki/merkit ja merkin/merkkien arvo (lukumäärä tekstissä).
@@ -38,13 +39,12 @@ def huffman_binaari(solmu, binaari="") -> dict:
     global koodattava_teksti
 
     if type(solmu) is str:
-        koodattava_teksti += '1'
-        koodattava_teksti += format(ord(solmu), '08b')
-        print(solmu, ' ', binaari)
+        koodattava_teksti += "1"
+        koodattava_teksti += format(ord(solmu), "08b")
         return {solmu: binaari}
     (v, o) = (solmu[0], solmu[1])
     taulukko = dict()
-    koodattava_teksti += '0'
+    koodattava_teksti += "0"
     taulukko.update(huffman_binaari(v, binaari + "0"))
     taulukko.update(huffman_binaari(o, binaari + "1"))
     return taulukko
@@ -75,21 +75,59 @@ def lue_tiedosto(tiedosto_nimi: str) -> None:
     return teksti
 
 
-def pakkaa(tiedosto_nimi: str) -> dict:
+def yhdista_sanakirja_ja_teksti(teksti: str, sanakirja: dict) -> None:
+    """Lisätään globaalin muuttujan (koodattava_teksti) alkuun info (3-bit) kuinka monta nollaa poistetaan sanakirjan lopusta. Sanakirja (Huffman puu) osuuden loppuun lisätään nollia niin, että tulee 8-bittiä nollia -> sanakirja loppuu ja pakattu teksti alkaa.
+    otsake = 3-bittiä,
+    sanakirja = tarvittava määrä tavuja, lopussa otsakkeen merkitsemä määrä nollia
+    erottaja = tavullinen nollia
+    pakattu_teksti = sanakirjan avulla koottu pakattava teksti
+    """
+    global koodattava_teksti
+
+    pakattu_teksti = ''
+    for c in teksti:
+        pakattu_teksti += sanakirja[c]
+
+    tyhjaa = 8 - (len(koodattava_teksti) + len(pakattu_teksti)) % 8
+
+    koodattava_teksti = format(tyhjaa, '08b') + koodattava_teksti + '0'*tyhjaa + '0'*8 + pakattu_teksti
+
+def lisaa_pakattu_teksti(teksti: str, sanakirja: dict) -> None:
+    global koodattava_teksti
+    for c in teksti:
+        koodattava_teksti += sanakirja[c]
+
+
+def pakkaa(tiedosto_nimi: str) -> str:
     """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan. Tulostaa ja palauttaa sanakirjan.
 
     Args:
         tiedosto_nimi (str): Käsiteltävän tiedoston nimi.
     """
+
     teksti = lue_tiedosto(tiedosto_nimi)
     merkit = esiintyvyys_laskin(teksti)
     solmut = merkit
     bitti_koodi_sanakirja = huffman_puu(solmut)
 
-    for merkki in merkit:
-        print(f"{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}")
+    # for merkki in merkit:
+    #     print(f"{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}")
 
-    return bitti_koodi_sanakirja
+    # print(bitti_koodi_sanakirja)
+    # print(koodattava_teksti)
+    yhdista_sanakirja_ja_teksti(teksti, bitti_koodi_sanakirja)
+
+    # print(koodattava_teksti)
+
+    int_arr = []
+    for b in range(0, len(koodattava_teksti), 8):
+        int_arr.append(int(koodattava_teksti[b:b+8], 2))
+
+    pakattu_tiedosto = tiedosto_nimi + '.huff'
+    with open(pakattu_tiedosto, 'wb') as tiedosto:
+        tiedosto.write(bytearray(int_arr))
+    
+    print(f'Pakattu tiedosto {pakattu_tiedosto} luotu.')
 
 
 if __name__ == "__main__":
@@ -98,4 +136,5 @@ if __name__ == "__main__":
     )
     if len(sys.argv) > 1:
         pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
-    print(pakkaa(pakattava_tiedosto))
+
+    pakkaa(pakattava_tiedosto)

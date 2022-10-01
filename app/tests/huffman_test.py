@@ -35,17 +35,21 @@ class TestHuffman(unittest.TestCase):
     def test_huffman_puu_palauttaa_oikean_lasketun_binaari_arvon_kirjaimelle(self):
         sanakirja = huffman.esiintyvyys_laskin(self.testi_teksti)
         bitti_koodi_sanakirja = huffman.huffman_puu(sanakirja)
-        self.assertEqual(bitti_koodi_sanakirja['A'], '01')
+        self.assertEqual(bitti_koodi_sanakirja["A"], "01")
 
     def test_huffman_binaari_palauttaa_sanakirjan(self):
-        juuri = (('A','B'),('C','D'))
+        juuri = (("A", "B"), ("C", "D"))
         binaari = huffman.huffman_binaari(juuri)
         self.assertEqual(type(binaari), dict)
 
     def test_huffman_binaari_palauttaa_merkin_ja_binaariarvon_jos_ollaan_lehdessa(self):
-        binaari = huffman.huffman_binaari('A', '001')
-        self.assertEqual(binaari, {'A': '001'})
+        binaari = huffman.huffman_binaari("A", "001")
+        self.assertEqual(binaari, {"A": "001"})
 
     def test_tiedoston_lukeminen(self):
-        teksti = huffman.lue_tiedosto(os.path.join(os.getcwd(), 'app', 'tests', 'simple_test.txt'))
-        self.assertEqual(teksti, 'AABABABCBCBDBDBABAAAACCACDCDCDAAACDCDAABCAACBACAAABCABDDCBABAA')
+        teksti = huffman.lue_tiedosto(
+            os.path.join(os.getcwd(), "app", "tests", "simple_test.txt")
+        )
+        self.assertEqual(
+            teksti, "AABABABCBCBDBDBABAAAACCACDCDCDAAACDCDAABCAACBACAAABCABDDCBABAA"
+        )

@@ -102,7 +102,7 @@ def printtaa_koodattava_teksti() -> str:
     return koodattava_teksti
 
 
-def pakkaa(tiedosto_nimi: str) -> str:
+def pakkaa(tiedosto_nimi: str) -> None:
     """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan. Tulostaa ja palauttaa sanakirjan.
 
     Args:
@@ -114,11 +114,6 @@ def pakkaa(tiedosto_nimi: str) -> str:
     solmut = merkit
     bitti_koodi_sanakirja = huffman_puu(solmut)
 
-    # for merkki in merkit:
-    #     print(f"{repr(merkki[0]):4} -> {bitti_koodi_sanakirja[merkki[0]]}")
-
-    # print(bitti_koodi_sanakirja)
-    # print(koodattava_teksti)
     yhdista_sanakirja_ja_teksti(teksti, bitti_koodi_sanakirja)
 
     int_arr = []
@@ -132,11 +127,63 @@ def pakkaa(tiedosto_nimi: str) -> str:
     print(f'Pakattu tiedosto {pakattu_tiedosto} luotu.')
 
 
+def pura(tiedosto_nimi: str) -> str:
+
+    with open(tiedosto_nimi, 'rb') as tiedosto:
+        teksti = tiedosto.read()
+    
+    nollia_lopussa = teksti[0]
+    teksti = teksti[1:]
+
+    binaari_teksti = ''
+    for tavu in teksti:
+        binaari_teksti += format(tavu, '08b')
+    
+    sanakirja = {}
+    apumuuttuja = ''
+    vali = ''
+    bitti = 0
+
+    pakattu_binaari = ''
+
+    while bitti < len(binaari_teksti):
+        if binaari_teksti[bitti] == '0':
+            apumuuttuja += '0'
+            vali += '0'
+            if len(vali) == (8 + nollia_lopussa):
+                pakattu_binaari = binaari_teksti[bitti+1:]
+                break
+            bitti += 1
+        else:
+            merkki = chr(int(binaari_teksti[bitti+1:bitti+9],2))
+            sanakirja[merkki] = apumuuttuja
+            apumuuttuja = apumuuttuja[:-1] + '1'
+            vali = ''
+            bitti += 9
+    
+    # Dekoodaus
+    apumuuttuja = ''
+    dekoodattu_teksti = ''
+    for bitti in pakattu_binaari:
+        apumuuttuja += bitti
+        if apumuuttuja in list(sanakirja.values()):
+            dekoodattu_teksti += list(sanakirja.keys())[list(sanakirja.values()).index(apumuuttuja)]
+            apumuuttuja = ''
+
+    dekoodattu_tiedosto = tiedosto_nimi + '.decoded'
+    with open(dekoodattu_tiedosto, 'w') as tiedosto:
+        tiedosto.write(dekoodattu_teksti)
+
+
 if __name__ == "__main__":
     pakattava_tiedosto = os.path.join(
         os.path.dirname(__file__), "tests", "simple_test.txt"
     )
+    purettava_tiedosto = os.path.join(
+        os.path.dirname(__file__), "tests", "simple_test.txt.huff"
+    )
     if len(sys.argv) > 1:
         pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
 
-    pakkaa(pakattava_tiedosto)
+    # pakkaa(pakattava_tiedosto)
+    pura(purettava_tiedosto)

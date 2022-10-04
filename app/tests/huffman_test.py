@@ -61,12 +61,3 @@ class TestHuffman(unittest.TestCase):
         self.assertEqual(
             tiedosto, os.path.join(os.getcwd(), "app", "tests", "simple_test.txt.huff")
         )
-
-    def test_pakatun_testitiedoston_purkaminen(self):
-        tiedosto = huffman.pura(
-            os.path.join(os.getcwd(), "app", "tests", "simple_test.txt.huff")
-        )
-        self.assertEqual(
-            tiedosto, os.path.join(os.getcwd(), "app", "tests", "simple_test.txt.huff.purettu")
-        )
-

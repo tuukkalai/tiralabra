@@ -75,7 +75,7 @@ def lue_tiedosto(tiedosto_nimi: str) -> None:
     return teksti
 
 
-def yhdista_sanakirja_ja_teksti(teksti: str, sanakirja: dict) -> None:
+def yhdista_teksti_ja_sanakirja(teksti: str, sanakirja: dict) -> None:
     """Lisätään globaalin muuttujan (koodattava_teksti) alkuun info (3-bit) kuinka monta nollaa poistetaan sanakirjan lopusta. Sanakirja (Huffman puu) osuuden loppuun lisätään nollia niin, että tulee 8-bittiä nollia -> sanakirja loppuu ja pakattu teksti alkaa.
     otsake = 3-bittiä,
     sanakirja = tarvittava määrä tavuja, lopussa otsakkeen merkitsemä määrä nollia
@@ -84,29 +84,25 @@ def yhdista_sanakirja_ja_teksti(teksti: str, sanakirja: dict) -> None:
     """
     global koodattava_teksti
 
-    pakattu_teksti = ''
+    pakattu_teksti = ""
     for c in teksti:
         pakattu_teksti += sanakirja[c]
 
-    tyhjaa = 8 - (len(koodattava_teksti) + len(pakattu_teksti)) % 8
-
-    koodattava_teksti = format(tyhjaa, '08b') + koodattava_teksti + '0'*tyhjaa + '0'*8 + pakattu_teksti
-
-def lisaa_pakattu_teksti(teksti: str, sanakirja: dict) -> None:
-    global koodattava_teksti
-    for c in teksti:
-        koodattava_teksti += sanakirja[c]
+    koodattava_teksti = (
+        format(len(koodattava_teksti), "016b")
+        + koodattava_teksti
+        + pakattu_teksti
+    )
 
 
-def printtaa_koodattava_teksti() -> str:
-    return koodattava_teksti
-
-
-def pakkaa(tiedosto_nimi: str) -> None:
+def pakkaa(tiedosto_nimi: str) -> str:
     """Pää pakkausohjelma. Lukee annetun tiedoston, laskee käytettyjen merkkien määrät, muodostaa huffman_puun avulla merkkien ja binäärikoodien sanakirjan. Tulostaa ja palauttaa sanakirjan.
 
     Args:
         tiedosto_nimi (str): Käsiteltävän tiedoston nimi.
+
+    Returns:
+        str: Palauttaa pakatun tiedoston nimen
     """
 
     teksti = lue_tiedosto(tiedosto_nimi)
@@ -114,76 +110,114 @@ def pakkaa(tiedosto_nimi: str) -> None:
     solmut = merkit
     bitti_koodi_sanakirja = huffman_puu(solmut)
 
-    yhdista_sanakirja_ja_teksti(teksti, bitti_koodi_sanakirja)
+    yhdista_teksti_ja_sanakirja(teksti, bitti_koodi_sanakirja)
 
     int_arr = []
     for b in range(0, len(koodattava_teksti), 8):
-        int_arr.append(int(koodattava_teksti[b:b+8], 2))
+        int_arr.append(int(koodattava_teksti[b : b + 8], 2))
 
-    pakattu_tiedosto = tiedosto_nimi + '.huff'
-    with open(pakattu_tiedosto, 'wb') as tiedosto:
+    pakattu_tiedosto = tiedosto_nimi + ".huff"
+    with open(pakattu_tiedosto, "wb") as tiedosto:
         tiedosto.write(bytearray(int_arr))
-    
-    print(f'Pakattu tiedosto {pakattu_tiedosto} luotu.')
+
+    return pakattu_tiedosto
 
 
 def pura(tiedosto_nimi: str) -> str:
+    """Pakatun tiedoston purku.
+    Tiedoston sisältö luetaan muuttujaan teksti, josta siitä käsitellään binäärimuotoinen esitys.
+    Binäärimuotoisen tekstin kaksi ensimmäistä tavua (16 bittiä) kertoo kuinka pitkä sanakirja on.
+    Sanakirja käydään läpi postorder traversal algoritmilla, jolla saadaan palautettua dict tyyppinen sanakirja.
+    Sanakirjan ja lopun binäärimuotoisen "tekstin" avulla saadaan palautettua pakattu tiedosto.
 
-    with open(tiedosto_nimi, 'rb') as tiedosto:
+    Args:
+        tiedosto_nimi (str): Purettava tiedosto
+
+    Returns:
+        str: Palauttaa puretun tiedoston nimen
+    """
+
+    # Tiedoston lukeminen
+    with open(tiedosto_nimi, "rb") as tiedosto:
         teksti = tiedosto.read()
-    
-    nollia_lopussa = teksti[0]
-    teksti = teksti[1:]
 
-    binaari_teksti = ''
+    # Binäärimuotoinen esitys
+    binaari_teksti = ""
     for tavu in teksti:
-        binaari_teksti += format(tavu, '08b')
-    
+        binaari_teksti += format(tavu, "08b")
+
+    sanakirjan_pituus = int(binaari_teksti[:16],2)
+    binaari_teksti = binaari_teksti[16:]
+
     sanakirja = {}
-    apumuuttuja = ''
-    vali = ''
+    apumuuttuja = ""
     bitti = 0
 
-    pakattu_binaari = ''
-
-    while bitti < len(binaari_teksti):
-        if binaari_teksti[bitti] == '0':
+    # Postorder traversal
+    while bitti < sanakirjan_pituus:
+        if binaari_teksti[bitti] == "0":
             apumuuttuja += '0'
-            vali += '0'
-            if len(vali) == (8 + nollia_lopussa):
-                pakattu_binaari = binaari_teksti[bitti+1:]
-                break
             bitti += 1
         else:
-            merkki = chr(int(binaari_teksti[bitti+1:bitti+9],2))
+            merkki = chr(int(binaari_teksti[bitti + 1 : bitti + 9], 2))
             sanakirja[merkki] = apumuuttuja
-            apumuuttuja = apumuuttuja[:-1] + '1'
-            vali = ''
+            while len(apumuuttuja) > 0 and apumuuttuja[-1] == '1':
+                apumuuttuja = apumuuttuja[:-1]
+            apumuuttuja = apumuuttuja[:-1] + "1"
             bitti += 9
-    
+
     # Dekoodaus
-    apumuuttuja = ''
-    dekoodattu_teksti = ''
-    for bitti in pakattu_binaari:
+    apumuuttuja = ""
+    dekoodattu_teksti = ""
+    for bitti in binaari_teksti[sanakirjan_pituus:]:
         apumuuttuja += bitti
         if apumuuttuja in list(sanakirja.values()):
-            dekoodattu_teksti += list(sanakirja.keys())[list(sanakirja.values()).index(apumuuttuja)]
-            apumuuttuja = ''
+            dekoodattu_teksti += list(sanakirja.keys())[
+                list(sanakirja.values()).index(apumuuttuja)
+            ]
+            apumuuttuja = ""
 
-    dekoodattu_tiedosto = tiedosto_nimi + '.decoded'
-    with open(dekoodattu_tiedosto, 'w') as tiedosto:
+    dekoodattu_tiedosto = tiedosto_nimi + ".purettu"
+    with open(dekoodattu_tiedosto, "w") as tiedosto:
         tiedosto.write(dekoodattu_teksti)
 
+    return dekoodattu_tiedosto
+
+
+def kayttoohje():
+    print("Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla") 
+    print()
+    print("Käyttö:")
+    print("  python huffman.py [vipu] [tiedosto]")
+    print()
+    print("Vivut:")
+    print("  -c", " "*10, "pakkaa annettu tiedosto")
+    print("  -d", " "*10, "pura annettu tiedosto")
+    print("  -h", " "*10, "näytä ohje")
+
+def paaohjelma():
+    if len(sys.argv) < 3:
+        kayttoohje()
+        return
+
+    tiedosto = os.path.join(os.getcwd(), sys.argv[2])
+
+    if not os.path.isfile(tiedosto) and not os.path.isfile(sys.argv[2]):
+        print(f'Tiedostoa {sys.argv[2]} ei löydy.')
+        return
+    
+    vipu = sys.argv[1]
+
+    if vipu == '-c':
+        pakattu = pakkaa(tiedosto)
+        print(f'Pakattu tiedosto tallennettu {pakattu}')
+
+    if vipu == '-d':
+        purettu = pura(tiedosto)
+        print(f'Purettu tiedosto tallennettu {purettu}')
+
+    if vipu == '-h':
+        kayttoohje()
 
 if __name__ == "__main__":
-    pakattava_tiedosto = os.path.join(
-        os.path.dirname(__file__), "tests", "simple_test.txt"
-    )
-    purettava_tiedosto = os.path.join(
-        os.path.dirname(__file__), "tests", "simple_test.txt.huff"
-    )
-    if len(sys.argv) > 1:
-        pakattava_tiedosto = os.path.join(os.getcwd(), sys.argv[1])
-
-    # pakkaa(pakattava_tiedosto)
-    pura(purettava_tiedosto)
+    paaohjelma()

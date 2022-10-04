@@ -31,10 +31,10 @@ poetry install
 
 ## Projektin suorittaminen
 
-Käynnistä projekti komennolla
+Aja Huffman-algoritmin ohjelma
 
 ```sh
-poetry run invoke start
+poetry run invoke huffman
 ```
 
 ## Muita hyödyllisiä komentoja

@@ -1,8 +1,17 @@
 from invoke import task
 
+
 @task
-def start(ctx):
-    ctx.run('python app/huffman.py')
+def huffmanpakkaa(ctx, tiedosto):
+    ctx.run(f'python app/huffman.py -c {tiedosto}')
+
+@task
+def huffmanpura(ctx, tiedosto):
+    ctx.run(f'python app/huffman.py -d {tiedosto}')
+
+@task
+def huffmanohje(ctx):
+    ctx.run('python app/huffman.py -h')
 
 @task
 def test(ctx):

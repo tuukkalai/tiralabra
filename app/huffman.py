@@ -185,15 +185,23 @@ def pura(tiedosto_nimi: str) -> str:
 
 
 def kayttoohje():
+    print()
     print("Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla") 
     print()
-    print("Käyttö:")
-    print("  python huffman.py [vipu] [tiedosto]")
+    print("┌──────────────────────────────────────────────────────────┐")
+    print("│  Käyttö:                                                 │")
+    print("│    poetry run invoke huffmanpakkaa [tiedosto]            │")
+    print("│    poetry run invoke huffmanpura [tiedosto]              │")
+    print("└──────────────────────────────────────────────────────────┘")
+    print()
+    print("Sovelluksen voi käynnistää myös ilman poetryn komentoja:")
+    print("  python3 app/huffman.py [vipu] [tiedosto]")
     print()
     print("Vivut:")
     print("  -c", " "*10, "pakkaa annettu tiedosto")
     print("  -d", " "*10, "pura annettu tiedosto")
     print("  -h", " "*10, "näytä ohje")
+    print()
 
 def paaohjelma():
     if len(sys.argv) < 3:

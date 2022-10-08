@@ -12,6 +12,7 @@
 - [Viikko 2](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko2.md)
 - [Viikko 3](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko3.md)
 - [Viikko 4](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko4.md)
+- [Viikko 5](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko5.md)
 
 ### Muut
 
@@ -31,10 +32,16 @@ poetry install
 
 ## Projektin suorittaminen
 
-Aja Huffman-algoritmin ohjelma
+Aja tiedoston pakkaaminen Huffman-algoritmilla
 
 ```sh
-poetry run invoke huffman
+poetry run invoke huffmanpakkaa [tiedosto]
+```
+
+Aja pakatun tiedoston purkaminen Huffman-algoritmilla
+
+```sh
+poetry run invoke huffmanpura [tiedosto]
 ```
 
 ## Muita hyödyllisiä komentoja

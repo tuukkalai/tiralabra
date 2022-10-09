@@ -28,5 +28,5 @@ Seuraavaksi viikoksi tavoitteena LZ78 algoritmin edistämistä ja paranneltu pro
 |:--|:--|:--|
 |4.10.|Huffman-puun kirjoittaminen tiedostoon.|6|
 |5.10.|Huffman-puun lukeminen tiedoston alusta ja pakatun tiedoston purkaminen Huffman-puun avulla|6|
-|8.10.|LZ78-algoritmin työstön aloittaminen ([branch 'lz'](https://github.com/tuukkalai/tiralabra/blob/lz/app/lz78.py)), viikkoraportin kirjoittaminen|3|
+|8.10.|LZ78-algoritmin työstön aloittaminen ([app/lz78.py](https://github.com/tuukkalai/tiralabra/blob/main/app/lz78.py)), viikkoraportin kirjoittaminen|3|
 |||yht. 15|

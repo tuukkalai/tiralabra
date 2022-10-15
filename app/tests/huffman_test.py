@@ -1,4 +1,5 @@
 import os
+import sys
 import unittest
 import huffman
 
@@ -59,3 +60,26 @@ class TestHuffman(unittest.TestCase):
         self.assertEqual(
             tiedosto, os.path.join(os.getcwd(), "data", "simple_test.txt.huff")
         )
+
+    def test_kayttoohje_nakyy_vivulla(self):
+        tuloste = huffman.kayttoohje()
+        self.assertEqual("""
+    Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla
+    
+    ┌──────────────────────────────────────────────────────────┐
+    │  Käyttö:                                                 │
+    │    poetry run invoke huffmanpakkaa [tiedosto]            │
+    │    poetry run invoke huffmanpura [tiedosto]              │
+    └──────────────────────────────────────────────────────────┘
+    
+    Sovelluksen voi käynnistää myös ilman poetryn komentoja:
+      python3 app/huffman.py [vipu] [tiedosto]
+    
+    Vivut:
+      -c          pakkaa annettu tiedosto
+      -d          pura annettu tiedosto
+      -h          näytä ohje
+    """,
+            tuloste
+        )
+            

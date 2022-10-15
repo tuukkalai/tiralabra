@@ -183,28 +183,27 @@ def pura(tiedosto_nimi: str) -> str:
 
 
 def kayttoohje():
-    print()
-    print("Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla")
-    print()
-    print("┌──────────────────────────────────────────────────────────┐")
-    print("│  Käyttö:                                                 │")
-    print("│    poetry run invoke huffmanpakkaa [tiedosto]            │")
-    print("│    poetry run invoke huffmanpura [tiedosto]              │")
-    print("└──────────────────────────────────────────────────────────┘")
-    print()
-    print("Sovelluksen voi käynnistää myös ilman poetryn komentoja:")
-    print("  python3 app/huffman.py [vipu] [tiedosto]")
-    print()
-    print("Vivut:")
-    print("  -c", " " * 10, "pakkaa annettu tiedosto")
-    print("  -d", " " * 10, "pura annettu tiedosto")
-    print("  -h", " " * 10, "näytä ohje")
-    print()
-
+    return f"\n\
+    Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla\n\
+    \n\
+    ┌──────────────────────────────────────────────────────────┐\n\
+    │  Käyttö:                                                 │\n\
+    │    poetry run invoke huffmanpakkaa [tiedosto]            │\n\
+    │    poetry run invoke huffmanpura [tiedosto]              │\n\
+    └──────────────────────────────────────────────────────────┘\n\
+    \n\
+    Sovelluksen voi käynnistää myös ilman poetryn komentoja:\n\
+      python3 app/huffman.py [vipu] [tiedosto]\n\
+    \n\
+    Vivut:\n\
+      -c{' ' * 10}pakkaa annettu tiedosto\n\
+      -d{' ' * 10}pura annettu tiedosto\n\
+      -h{' ' * 10}näytä ohje\n\
+    "
 
 def paaohjelma():
     if len(sys.argv) < 3:
-        kayttoohje()
+        print(kayttoohje())
         return
 
     tiedosto = os.path.join(os.getcwd(), sys.argv[2])
@@ -224,7 +223,7 @@ def paaohjelma():
         print(f"Purettu tiedosto tallennettu {purettu}")
 
     if vipu == "-h":
-        kayttoohje()
+        print(kayttoohje())
 
 
 if __name__ == "__main__":

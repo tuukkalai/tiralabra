@@ -13,6 +13,7 @@
 - [Viikko 3](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko3.md)
 - [Viikko 4](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko4.md)
 - [Viikko 5](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko5.md)
+- [Viikko 6](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/viikkoraportit/viikko6.md)
 
 ### Muut
 
@@ -42,6 +43,16 @@ Aja pakatun tiedoston purkaminen Huffman-algoritmilla
 
 ```sh
 poetry run invoke huffmanpura [tiedosto]
+```
+
+```sh
+poetry run invoke lzpakkaa [tiedosto]
+```
+
+Aja pakatun tiedoston purkaminen Huffman-algoritmilla
+
+```sh
+poetry run invoke lzpura [tiedosto]
 ```
 
 ## Muita hyödyllisiä komentoja

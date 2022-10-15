@@ -48,16 +48,14 @@ class TestHuffman(unittest.TestCase):
 
     def test_tiedoston_lukeminen(self):
         teksti = huffman.lue_tiedosto(
-            os.path.join(os.getcwd(), "app", "tests", "simple_test.txt")
+            os.path.join(os.getcwd(), "data", "simple_test.txt")
         )
         self.assertEqual(
             teksti, "AABABABCBCBDBDBABAAAACCACDCDCDAAACDCDAABCAACBACAAABCABDDCBABAA"
         )
-    
+
     def test_testitiedoston_pakkaaminen(self):
-        tiedosto = huffman.pakkaa(
-            os.path.join(os.getcwd(), "app", "tests", "simple_test.txt")
-        )
+        tiedosto = huffman.pakkaa(os.path.join(os.getcwd(), "data", "simple_test.txt"))
         self.assertEqual(
-            tiedosto, os.path.join(os.getcwd(), "app", "tests", "simple_test.txt.huff")
+            tiedosto, os.path.join(os.getcwd(), "data", "simple_test.txt.huff")
         )

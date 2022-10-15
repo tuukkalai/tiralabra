@@ -20,6 +20,20 @@ def huffmanohje(ctx):
     ctx.run('python app/huffman.py -h')
 
 @task
+def lzpakkaa(ctx, tiedosto=None):
+    if tiedosto:
+        ctx.run(f'python app/lz78.py -c {tiedosto}')
+    else:
+        ctx.run(f'python app/lz78.py')
+
+@task
+def lzpura(ctx, tiedosto=None):
+    if tiedosto:
+        ctx.run(f'python app/lz78.py -d {tiedosto}')
+    else:
+        ctx.run(f'python app/lz78.py')
+
+@task
 def test(ctx):
     ctx.run('pytest app')
 

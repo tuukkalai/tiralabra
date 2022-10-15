@@ -89,9 +89,7 @@ def yhdista_teksti_ja_sanakirja(teksti: str, sanakirja: dict) -> None:
         pakattu_teksti += sanakirja[c]
 
     koodattava_teksti = (
-        format(len(koodattava_teksti), "016b")
-        + koodattava_teksti
-        + pakattu_teksti
+        format(len(koodattava_teksti), "016b") + koodattava_teksti + pakattu_teksti
     )
 
 
@@ -146,7 +144,7 @@ def pura(tiedosto_nimi: str) -> str:
     for tavu in teksti:
         binaari_teksti += format(tavu, "08b")
 
-    sanakirjan_pituus = int(binaari_teksti[:16],2)
+    sanakirjan_pituus = int(binaari_teksti[:16], 2)
     binaari_teksti = binaari_teksti[16:]
 
     sanakirja = {}
@@ -156,12 +154,12 @@ def pura(tiedosto_nimi: str) -> str:
     # Postorder traversal
     while bitti < sanakirjan_pituus:
         if binaari_teksti[bitti] == "0":
-            apumuuttuja += '0'
+            apumuuttuja += "0"
             bitti += 1
         else:
             merkki = chr(int(binaari_teksti[bitti + 1 : bitti + 9], 2))
             sanakirja[merkki] = apumuuttuja
-            while len(apumuuttuja) > 0 and apumuuttuja[-1] == '1':
+            while len(apumuuttuja) > 0 and apumuuttuja[-1] == "1":
                 apumuuttuja = apumuuttuja[:-1]
             apumuuttuja = apumuuttuja[:-1] + "1"
             bitti += 9
@@ -186,7 +184,7 @@ def pura(tiedosto_nimi: str) -> str:
 
 def kayttoohje():
     print()
-    print("Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla") 
+    print("Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla")
     print()
     print("┌──────────────────────────────────────────────────────────┐")
     print("│  Käyttö:                                                 │")
@@ -198,10 +196,11 @@ def kayttoohje():
     print("  python3 app/huffman.py [vipu] [tiedosto]")
     print()
     print("Vivut:")
-    print("  -c", " "*10, "pakkaa annettu tiedosto")
-    print("  -d", " "*10, "pura annettu tiedosto")
-    print("  -h", " "*10, "näytä ohje")
+    print("  -c", " " * 10, "pakkaa annettu tiedosto")
+    print("  -d", " " * 10, "pura annettu tiedosto")
+    print("  -h", " " * 10, "näytä ohje")
     print()
+
 
 def paaohjelma():
     if len(sys.argv) < 3:
@@ -211,21 +210,22 @@ def paaohjelma():
     tiedosto = os.path.join(os.getcwd(), sys.argv[2])
 
     if not os.path.isfile(tiedosto) and not os.path.isfile(sys.argv[2]):
-        print(f'Tiedostoa {sys.argv[2]} ei löydy.')
+        print(f"Tiedostoa {sys.argv[2]} ei löydy.")
         return
-    
+
     vipu = sys.argv[1]
 
-    if vipu == '-c':
+    if vipu == "-c":
         pakattu = pakkaa(tiedosto)
-        print(f'Pakattu tiedosto tallennettu {pakattu}')
+        print(f"Pakattu tiedosto tallennettu {pakattu}")
 
-    if vipu == '-d':
+    if vipu == "-d":
         purettu = pura(tiedosto)
-        print(f'Purettu tiedosto tallennettu {purettu}')
+        print(f"Purettu tiedosto tallennettu {purettu}")
 
-    if vipu == '-h':
+    if vipu == "-h":
         kayttoohje()
+
 
 if __name__ == "__main__":
     paaohjelma()

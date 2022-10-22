@@ -82,4 +82,3 @@ class TestHuffman(unittest.TestCase):
     """,
             tuloste
         )
-            

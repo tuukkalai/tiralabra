@@ -110,13 +110,13 @@ def pakkaa(tiedosto_nimi: str) -> str:
 
     yhdista_teksti_ja_sanakirja(teksti, bitti_koodi_sanakirja)
 
-    int_arr = []
+    numero_lista = []
     for b in range(0, len(koodattava_teksti), 8):
-        int_arr.append(int(koodattava_teksti[b : b + 8], 2))
+        numero_lista.append(int(koodattava_teksti[b : b + 8], 2))
 
     pakattu_tiedosto = tiedosto_nimi + ".huff"
     with open(pakattu_tiedosto, "wb") as tiedosto:
-        tiedosto.write(bytearray(int_arr))
+        tiedosto.write(bytearray(numero_lista))
 
     return pakattu_tiedosto
 

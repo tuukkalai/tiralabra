@@ -1,9 +1,16 @@
-import os
 import sys
 from tiedosto_palvelu import TiedostoPalvelu
 
 
-def pakkaa(teksti: str) -> str:
+def pakkaa(teksti: str) -> bytearray:
+    """pakkaa() lukee annetun merkkijonon ja palauttaa LZ78-algoritmilla koodatun merkkijonon.
+
+    Args:
+        teksti (str): Syöte, annettu merkkijono
+
+    Returns:
+        bytearray: Bittilista
+    """
     sanakirja = {}
     apumuuttuja = ""
     enkoodattavat_sijainnit = []
@@ -12,7 +19,7 @@ def pakkaa(teksti: str) -> str:
     sijainti = 1
     while i < len(teksti):
         apumuuttuja += teksti[i]
-        if apumuuttuja not in sanakirja:
+        if apumuuttuja not in sanakirja or (i+1) == len(teksti):
             sanakirja[apumuuttuja] = sijainti
             sijainti += 1
             if len(apumuuttuja) > 1 and apumuuttuja[:-1] in sanakirja:
@@ -22,50 +29,55 @@ def pakkaa(teksti: str) -> str:
             seuraavat_merkit.append(apumuuttuja[-1:])
             apumuuttuja = ""
         i += 1
-    pakattu_teksti = ""
+
+    sijainti_merkki_lista = []
     for i in range(len(enkoodattavat_sijainnit)):
-        pakattu_teksti += str(enkoodattavat_sijainnit[i]) + seuraavat_merkit[i]
-    return pakattu_teksti
+        sijainti_merkki_lista.append(enkoodattavat_sijainnit[i])
+        sijainti_merkki_lista.append(ord(seuraavat_merkit[i]))
+
+    return bytearray(sijainti_merkki_lista)
 
 
-def pura(pakattu_teksti: str) -> str:
+def pura(pakattu_teksti: bytearray) -> str:
     sijainnit = []
     seuraavat_merkit = []
+    sanakirja = []
     for i in range(len(pakattu_teksti)):
-        try:
-            osoitin = int(pakattu_teksti[i])
-        except ValueError:
-            seuraavat_merkit.append(pakattu_teksti[i])
+        if i % 2 == 0:
+            sijainnit.append(pakattu_teksti[i])
+            if pakattu_teksti[i] == 0:
+                sanakirja.append(chr(pakattu_teksti[i+1]))
+            else:
+                sanakirja.append(str(sanakirja[pakattu_teksti[i]-1]) + chr(pakattu_teksti[i+1]))
         else:
-            print("osoitin on ", osoitin, " ja tyyppiä ", type(osoitin))
-            sijainnit.append(osoitin)
-    print("sijainnit", sijainnit)
-    print("merkit", seuraavat_merkit)
+            seuraavat_merkit.append(chr(pakattu_teksti[i]))
+    
+    return "".join(sanakirja)
 
 
 def kayttoohje():
-    print()
-    print("Tekstitiedoston pakkaaminen ja purkaminen LZ78-algoritmilla")
-    print()
-    print("┌──────────────────────────────────────────────────────────┐")
-    print("│  Käyttö:                                                 │")
-    print("│    poetry run invoke lzpakkaa [tiedosto]                 │")
-    print("│    poetry run invoke lzpura [tiedosto]                   │")
-    print("└──────────────────────────────────────────────────────────┘")
-    print()
-    print("Sovelluksen voi käynnistää myös ilman poetryn komentoja:")
-    print("  python3 app/lz78.py [vipu] [tiedosto]")
-    print()
-    print("Vivut:")
-    print("  -c", " " * 10, "pakkaa annettu tiedosto")
-    print("  -d", " " * 10, "pura annettu tiedosto")
-    print("  -h", " " * 10, "näytä ohje")
-    print()
+    return f"\n\
+    Tekstitiedoston pakkaaminen ja purkaminen LZ78-algoritmilla\n\
+    \n\
+    ┌──────────────────────────────────────────────────────────┐\n\
+    │  Käyttö:                                                 │\n\
+    │    poetry run invoke lzpakkaa [tiedosto]                 │\n\
+    │    poetry run invoke lzpura [tiedosto]                   │\n\
+    └──────────────────────────────────────────────────────────┘\n\
+    \n\
+    Sovelluksen voi käynnistää myös ilman poetryn komentoja:\n\
+      python3 app/lz78.py [vipu] [tiedosto]\n\
+    \n\
+    Vivut:\n\
+      -c{' ' * 10}pakkaa annettu tiedosto\n\
+      -d{' ' * 10}pura annettu tiedosto\n\
+      -h{' ' * 10}näytä ohje\n\
+    "
 
 
 def paaohjelma():
     if len(sys.argv) < 3:
-        kayttoohje()
+        print(kayttoohje())
         return
 
     tiedosto = TiedostoPalvelu(sys.argv[2])
@@ -73,12 +85,14 @@ def paaohjelma():
     vipu = sys.argv[1]
 
     if vipu == "-c":
-        pakattu = pakkaa(tiedosto.lue_tiedosto())
-        print(f"Pakattu tiedosto tallennettu {pakattu}")
+        binaari = pakkaa(tiedosto.lue_tiedosto())
+        pakattu_tiedosto = TiedostoPalvelu(str(tiedosto))
+        pakattu_tiedosto.kirjoita_tiedosto(binaari, 'w+b')
 
     if vipu == "-d":
-        purettu = pura(tiedosto)
-        print(f"Purettu tiedosto tallennettu {purettu}")
+        purettu = pura(tiedosto.lue_tiedosto())
+        purettu_tiedosto = TiedostoPalvelu(str(tiedosto))
+        purettu_tiedosto.kirjoita_tiedosto(purettu, 'w')
 
     if vipu == "-h":
         kayttoohje()

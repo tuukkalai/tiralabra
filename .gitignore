@@ -3,4 +3,5 @@ temp/
 .coverage
 htmlcov/
 *.huff*
+*.lz*
 *.gz

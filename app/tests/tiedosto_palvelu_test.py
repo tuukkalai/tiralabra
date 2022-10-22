@@ -21,6 +21,12 @@ class TestTiedostoPalvelu(unittest.TestCase):
             "AABABABCBCBDBDBABAAAACCACDCDCDAAACDCDAABCAACBACAAABCABDDCBABAA",
         )
 
-    def test_olematon_tiedosto_palauttaa_virheen(self):
+    def test_olematon_tiedosto_palauttaa_varauksen_tiedostoon(self):
+        tiedosto = TiedostoPalvelu(os.path.join("data", "olematon_tiedosto.txt"))
+        self.assertEqual(str(tiedosto), os.path.join("data", "olematon_tiedosto.txt"))
+
+    def test_olemattoman_tiedoston_lukeminen_palauttaa_virheen(self):
         with self.assertRaises(OSError):
-            TiedostoPalvelu(os.path.join("data", "olematon_tiedosto.txt"))
+            tiedoston_sisalto = TiedostoPalvelu(
+                os.path.join("data", "olematon_tiedosto.txt")
+            ).lue_tiedosto()

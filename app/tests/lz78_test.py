@@ -6,29 +6,24 @@ from tiedosto_palvelu import TiedostoPalvelu
 
 class TestLZ(unittest.TestCase):
     def setUp(self) -> None:
-        self.tiedosto = TiedostoPalvelu(
-            os.path.join(os.getcwd(), "data", "simple_test.txt")
-        )
+        self.tiedosto = os.path.join(os.getcwd(), "data", "simple_test.txt")
 
     def test_lzpakkaa_tuottaa_pakatun_tiedoston(self):
-        pakattu_tiedosto = TiedostoPalvelu(str(self.tiedosto))
-        pakattu_tiedosto.kirjoita_tiedosto(
-            lz78.pakkaa(self.tiedosto.lue_tiedosto()), "w+b"
-        )
-        self.assertTrue(os.path.isfile(str(pakattu_tiedosto)))
+        pakattu_tiedosto_sijainti = lz78.pakkaa(self.tiedosto)
+
+        self.assertTrue(os.path.isfile(pakattu_tiedosto_sijainti))
 
     def test_lzpura_purkaa_pakatun_tiedoston_oikein(self):
-        pakattu_tiedosto = TiedostoPalvelu(str(self.tiedosto))
-        pakattu_tiedosto = pakattu_tiedosto.kirjoita_tiedosto(
-            lz78.pakkaa(self.tiedosto.lue_tiedosto()), "w+b"
+        pakattu_tiedosto_sijainti = lz78.pakkaa(self.tiedosto)
+
+        purettu_tiedosto_sijainti = lz78.pura(pakattu_tiedosto_sijainti)
+        purettu_tiedosto_sisalto = TiedostoPalvelu(
+            purettu_tiedosto_sijainti
+        ).lue_tiedosto()
+
+        self.assertEqual(
+            TiedostoPalvelu(self.tiedosto).lue_tiedosto(), purettu_tiedosto_sisalto
         )
-        tiedosto = TiedostoPalvelu(str(pakattu_tiedosto))
-        pakattu_tiedosto_sisalto = tiedosto.lue_tiedosto()
-        purettu_tiedosto_sijainti = tiedosto.kirjoita_tiedosto(
-            lz78.pura(pakattu_tiedosto_sisalto), "w"
-        )
-        purettu_tiedosto = TiedostoPalvelu(purettu_tiedosto_sijainti)
-        self.assertEqual(self.tiedosto.lue_tiedosto(), purettu_tiedosto.lue_tiedosto())
 
     def test_kayttoohje_nakyy_vivulla(self):
         tuloste = lz78.kayttoohje()

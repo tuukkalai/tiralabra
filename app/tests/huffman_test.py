@@ -1,7 +1,7 @@
 import os
-import sys
 import unittest
 import huffman
+from tiedosto_palvelu import TiedostoPalvelu
 
 
 class TestHuffman(unittest.TestCase):
@@ -55,15 +55,44 @@ class TestHuffman(unittest.TestCase):
             teksti, "AABABABCBCBDBDBABAAAACCACDCDCDAAACDCDAABCAACBACAAABCABDDCBABAA"
         )
 
-    def test_testitiedoston_pakkaaminen(self):
-        tiedosto = huffman.pakkaa(os.path.join(os.getcwd(), "data", "simple_test.txt"))
+    def test_testitiedoston_pakkaaminen_tuottaa_pakatun_tiedoston(self):
+        tiedosto_nimi = os.path.join(os.getcwd(), "data", "simple_test.txt")
+        pakattu_tiedosto = huffman.pakkaa(tiedosto_nimi)
+
         self.assertEqual(
-            tiedosto, os.path.join(os.getcwd(), "data", "simple_test.txt.huff")
+            pakattu_tiedosto, os.path.join(os.getcwd(), "data", "simple_test.txt.huff")
         )
+
+    def test_testitiedoston_purkaminen_tuottaa_puretun_tiedoston(self):
+        # Pakataan testitiedosto
+        tiedosto_nimi = os.path.join(os.getcwd(), "data", "simple_test.txt")
+        pakattu_tiedosto_nimi = huffman.pakkaa(tiedosto_nimi)
+
+        # Puretaan testitiedosto
+        purettu_tiedosto_nimi = huffman.pura(pakattu_tiedosto_nimi)
+
+        self.assertEqual(
+            purettu_tiedosto_nimi,
+            os.path.join(os.getcwd(), "data", "simple_test.txt.huff.purettu"),
+        )
+
+    def test_testitiedoston_purkaminen_vastaa_alkuperaista_sisaltoa(self):
+        # Pakataan testitiedosto
+        tiedosto_nimi = os.path.join(os.getcwd(), "data", "simple_test.txt")
+        pakattu_tiedosto_nimi = huffman.pakkaa(tiedosto_nimi)
+
+        # Puretaan testitiedosto
+        purettu_tiedosto_nimi = huffman.pura(pakattu_tiedosto_nimi)
+        purettu_tiedosto_sisalto = TiedostoPalvelu(purettu_tiedosto_nimi).lue_tiedosto()
+
+        alkuperainen_sisalto = TiedostoPalvelu(tiedosto_nimi).lue_tiedosto()
+
+        self.assertEqual(purettu_tiedosto_sisalto, alkuperainen_sisalto)
 
     def test_kayttoohje_nakyy_vivulla(self):
         tuloste = huffman.kayttoohje()
-        self.assertEqual("""
+        self.assertEqual(
+            """
     Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla
     
     ┌──────────────────────────────────────────────────────────┐
@@ -80,5 +109,5 @@ class TestHuffman(unittest.TestCase):
       -d          pura annettu tiedosto
       -h          näytä ohje
     """,
-            tuloste
+            tuloste,
         )

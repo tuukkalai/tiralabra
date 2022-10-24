@@ -26,24 +26,26 @@ class TiedostoPalvelu:
 
         return sisalto
 
-    def kirjoita_tiedosto(self, sisalto, moodi='w'):
+    def kirjoita_tiedosto(self, sisalto, moodi="w", algoritmi="lz"):
         # print('moodi', moodi)
         # print(sisalto)
         # print(type(sisalto))
         # print(f'sisalto(bytearray): {isinstance(sisalto, bytearray)}')
         # print(f'sisalto(str): {isinstance(sisalto, str)}')
-        if moodi == 'w+b':
-            self.tiedosto += '.lz'
+        if moodi == "w+b":
+            if algoritmi == "huffman":
+                self.tiedosto += ".huff"
+            else:
+                self.tiedosto += ".lz"
         else:
-            self.tiedosto += '.purettu'
+            self.tiedosto += ".purettu"
         with open(self.tiedosto, moodi) as tiedosto:
-            if moodi == 'w+b':
+            if moodi == "w+b":
                 tiedosto.write(bytearray(sisalto))
             else:
                 tiedosto.write(sisalto)
-        
-        return self.tiedosto
 
+        return self.tiedosto
 
     def _on_teksti_tiedosto(self):
         """Tarkistetaan tiedoston pääte, ja päätellään siitä onko kyseessä tekstitiedosto

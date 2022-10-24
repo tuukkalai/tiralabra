@@ -1,7 +1,7 @@
 # Aineopintojen harjoitustyö: Tietorakenteet ja algoritmit (periodi I), Laboratoriotyöskentely
 
 ![CI Status](https://github.com/tuukkalai/tiralabra/workflows/CI/badge.svg)
-[![codecov](https://codecov.io/gh/tuukkalai/tiralabra/branch/main/graph/badge.svg?token=0USONHIIIX)](https://codecov.io/gh/tuukkalai/tiralabra)
+[![codecov](https://img.shields.io/codecov/c/gh/tuukkalai/tiralabra)](https://codecov.io/gh/tuukkalai/tiralabra)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 ## Dokumentaatio

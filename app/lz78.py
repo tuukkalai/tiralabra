@@ -2,7 +2,7 @@ import sys
 from tiedosto_palvelu import TiedostoPalvelu
 
 
-def pakkaa(teksti: str) -> bytearray:
+def pakkaa(tiedosto_nimi: str) -> str:
     """pakkaa() lukee annetun merkkijonon ja palauttaa LZ78-algoritmilla koodatun merkkijonon.
 
     Args:
@@ -11,15 +11,18 @@ def pakkaa(teksti: str) -> bytearray:
     Returns:
         bytearray: Bittilista
     """
+    tiedosto = TiedostoPalvelu(tiedosto_nimi)
+    tiedosto_sisalto = tiedosto.lue_tiedosto()
+
     sanakirja = {}
     apumuuttuja = ""
     enkoodattavat_sijainnit = []
     seuraavat_merkit = []
     i = 0
     sijainti = 1
-    while i < len(teksti):
-        apumuuttuja += teksti[i]
-        if apumuuttuja not in sanakirja or (i+1) == len(teksti):
+    while i < len(tiedosto_sisalto):
+        apumuuttuja += tiedosto_sisalto[i]
+        if apumuuttuja not in sanakirja or (i + 1) == len(tiedosto_sisalto):
             sanakirja[apumuuttuja] = sijainti
             sijainti += 1
             if len(apumuuttuja) > 1 and apumuuttuja[:-1] in sanakirja:
@@ -35,24 +38,32 @@ def pakkaa(teksti: str) -> bytearray:
         sijainti_merkki_lista.append(enkoodattavat_sijainnit[i])
         sijainti_merkki_lista.append(ord(seuraavat_merkit[i]))
 
-    return bytearray(sijainti_merkki_lista)
+    tiedosto.kirjoita_tiedosto(sijainti_merkki_lista, "w+b")
+    return str(tiedosto)
 
 
-def pura(pakattu_teksti: bytearray) -> str:
+def pura(tiedosto_nimi: str) -> str:
+    tiedosto = TiedostoPalvelu(tiedosto_nimi)
+    tiedosto_sisalto = tiedosto.lue_tiedosto()
+
     sijainnit = []
     seuraavat_merkit = []
     sanakirja = []
-    for i in range(len(pakattu_teksti)):
+    for i in range(len(tiedosto_sisalto)):
         if i % 2 == 0:
-            sijainnit.append(pakattu_teksti[i])
-            if pakattu_teksti[i] == 0:
-                sanakirja.append(chr(pakattu_teksti[i+1]))
+            sijainnit.append(tiedosto_sisalto[i])
+            if tiedosto_sisalto[i] == 0:
+                sanakirja.append(chr(tiedosto_sisalto[i + 1]))
             else:
-                sanakirja.append(str(sanakirja[pakattu_teksti[i]-1]) + chr(pakattu_teksti[i+1]))
+                sanakirja.append(
+                    str(sanakirja[tiedosto_sisalto[i] - 1])
+                    + chr(tiedosto_sisalto[i + 1])
+                )
         else:
-            seuraavat_merkit.append(chr(pakattu_teksti[i]))
-    
-    return "".join(sanakirja)
+            seuraavat_merkit.append(chr(tiedosto_sisalto[i]))
+
+    tiedosto.kirjoita_tiedosto("".join(sanakirja))
+    return str(tiedosto)
 
 
 def kayttoohje():
@@ -80,19 +91,15 @@ def paaohjelma():
         print(kayttoohje())
         return
 
-    tiedosto = TiedostoPalvelu(sys.argv[2])
-
     vipu = sys.argv[1]
 
     if vipu == "-c":
-        binaari = pakkaa(tiedosto.lue_tiedosto())
-        pakattu_tiedosto = TiedostoPalvelu(str(tiedosto))
-        pakattu_tiedosto.kirjoita_tiedosto(binaari, 'w+b')
+        pakattu_tiedosto = pakkaa(sys.argv[2])
+        print("Pakattu tiedosto:", pakattu_tiedosto)
 
     if vipu == "-d":
-        purettu = pura(tiedosto.lue_tiedosto())
-        purettu_tiedosto = TiedostoPalvelu(str(tiedosto))
-        purettu_tiedosto.kirjoita_tiedosto(purettu, 'w')
+        purettu_tiedosto = pura(sys.argv[2])
+        print("Purettu tiedosto:", purettu_tiedosto)
 
     if vipu == "-h":
         kayttoohje()

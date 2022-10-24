@@ -1,5 +1,5 @@
-import os
 import sys
+from tiedosto_palvelu import TiedostoPalvelu
 
 
 # Globaali muuttuja, johon kirjoitetaan pakatun tiedoston data
@@ -89,7 +89,10 @@ def yhdista_teksti_ja_sanakirja(teksti: str, sanakirja: dict) -> None:
         pakattu_teksti += sanakirja[c]
 
     koodattava_teksti = (
-        format(len(koodattava_teksti), "016b") + koodattava_teksti + pakattu_teksti
+        format(len(koodattava_teksti), "016b")
+        + format(len(pakattu_teksti), "016b")
+        + koodattava_teksti
+        + pakattu_teksti
     )
 
 
@@ -102,23 +105,26 @@ def pakkaa(tiedosto_nimi: str) -> str:
     Returns:
         str: Palauttaa pakatun tiedoston nimen
     """
+    global koodattava_teksti
 
-    teksti = lue_tiedosto(tiedosto_nimi)
-    merkit = esiintyvyys_laskin(teksti)
+    tiedosto = TiedostoPalvelu(tiedosto_nimi)
+    tiedosto_sisalto = tiedosto.lue_tiedosto()
+
+    merkit = esiintyvyys_laskin(tiedosto_sisalto)
     solmut = merkit
     bitti_koodi_sanakirja = huffman_puu(solmut)
 
-    yhdista_teksti_ja_sanakirja(teksti, bitti_koodi_sanakirja)
+    yhdista_teksti_ja_sanakirja(tiedosto_sisalto, bitti_koodi_sanakirja)
 
     numero_lista = []
     for b in range(0, len(koodattava_teksti), 8):
         numero_lista.append(int(koodattava_teksti[b : b + 8], 2))
 
-    pakattu_tiedosto = tiedosto_nimi + ".huff"
-    with open(pakattu_tiedosto, "wb") as tiedosto:
-        tiedosto.write(bytearray(numero_lista))
+    tiedosto = tiedosto.kirjoita_tiedosto(numero_lista, "w+b", "huffman")
 
-    return pakattu_tiedosto
+    koodattava_teksti = ""
+
+    return str(tiedosto)
 
 
 def pura(tiedosto_nimi: str) -> str:
@@ -135,16 +141,18 @@ def pura(tiedosto_nimi: str) -> str:
         str: Palauttaa puretun tiedoston nimen
     """
 
-    # Tiedoston lukeminen
-    with open(tiedosto_nimi, "rb") as tiedosto:
-        teksti = tiedosto.read()
+    tiedosto = TiedostoPalvelu(tiedosto_nimi)
+    tiedosto_sisalto = tiedosto.lue_tiedosto()
 
     # Binäärimuotoinen esitys
     binaari_teksti = ""
-    for tavu in teksti:
+    for tavu in tiedosto_sisalto:
         binaari_teksti += format(tavu, "08b")
 
     sanakirjan_pituus = int(binaari_teksti[:16], 2)
+    binaari_teksti = binaari_teksti[16:]
+
+    pakatun_tekstin_pituus = int(binaari_teksti[:16], 2)
     binaari_teksti = binaari_teksti[16:]
 
     sanakirja = {}
@@ -167,19 +175,20 @@ def pura(tiedosto_nimi: str) -> str:
     # Dekoodaus
     apumuuttuja = ""
     dekoodattu_teksti = ""
+    i = 0
     for bitti in binaari_teksti[sanakirjan_pituus:]:
+        if i >= pakatun_tekstin_pituus:
+            break
         apumuuttuja += bitti
         if apumuuttuja in list(sanakirja.values()):
             dekoodattu_teksti += list(sanakirja.keys())[
                 list(sanakirja.values()).index(apumuuttuja)
             ]
             apumuuttuja = ""
+        i += 1
 
-    dekoodattu_tiedosto = tiedosto_nimi + ".purettu"
-    with open(dekoodattu_tiedosto, "w") as tiedosto:
-        tiedosto.write(dekoodattu_teksti)
-
-    return dekoodattu_tiedosto
+    tiedosto = tiedosto.kirjoita_tiedosto(dekoodattu_teksti, "w", "huffman")
+    return str(tiedosto)
 
 
 def kayttoohje():
@@ -201,29 +210,24 @@ def kayttoohje():
       -h{' ' * 10}näytä ohje\n\
     "
 
+
 def paaohjelma():
     if len(sys.argv) < 3:
         print(kayttoohje())
         return
 
-    tiedosto = os.path.join(os.getcwd(), sys.argv[2])
-
-    if not os.path.isfile(tiedosto) and not os.path.isfile(sys.argv[2]):
-        print(f"Tiedostoa {sys.argv[2]} ei löydy.")
-        return
-
     vipu = sys.argv[1]
 
     if vipu == "-c":
-        pakattu = pakkaa(tiedosto)
-        print(f"Pakattu tiedosto tallennettu {pakattu}")
+        pakattu_tiedosto = pakkaa(sys.argv[2])
+        print("Pakattu tiedosto:", pakattu_tiedosto)
 
     if vipu == "-d":
-        purettu = pura(tiedosto)
-        print(f"Purettu tiedosto tallennettu {purettu}")
+        purettu_tiedosto = pura(sys.argv[2])
+        print("Purettu tiedosto:", purettu_tiedosto)
 
     if vipu == "-h":
-        print(kayttoohje())
+        kayttoohje()
 
 
 if __name__ == "__main__":

@@ -197,12 +197,8 @@ def kayttoohje():
     \n\
     ┌──────────────────────────────────────────────────────────┐\n\
     │  Käyttö:                                                 │\n\
-    │    poetry run invoke huffmanpakkaa [tiedosto]            │\n\
-    │    poetry run invoke huffmanpura [tiedosto]              │\n\
+    │    poetry run python app/huffman.py [vipu] [tiedosto]    │\n\
     └──────────────────────────────────────────────────────────┘\n\
-    \n\
-    Sovelluksen voi käynnistää myös ilman poetryn komentoja:\n\
-      python3 app/huffman.py [vipu] [tiedosto]\n\
     \n\
     Vivut:\n\
       -c{' ' * 10}pakkaa annettu tiedosto\n\

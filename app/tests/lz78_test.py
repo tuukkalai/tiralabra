@@ -33,12 +33,8 @@ class TestLZ(unittest.TestCase):
     
     ┌──────────────────────────────────────────────────────────┐
     │  Käyttö:                                                 │
-    │    poetry run invoke lzpakkaa [tiedosto]                 │
-    │    poetry run invoke lzpura [tiedosto]                   │
+    │    poetry run python app/lz78.py [vipu] [tiedosto]       │
     └──────────────────────────────────────────────────────────┘
-    
-    Sovelluksen voi käynnistää myös ilman poetryn komentoja:
-      python3 app/lz78.py [vipu] [tiedosto]
     
     Vivut:
       -c          pakkaa annettu tiedosto

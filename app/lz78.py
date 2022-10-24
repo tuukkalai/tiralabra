@@ -72,12 +72,8 @@ def kayttoohje():
     \n\
     ┌──────────────────────────────────────────────────────────┐\n\
     │  Käyttö:                                                 │\n\
-    │    poetry run invoke lzpakkaa [tiedosto]                 │\n\
-    │    poetry run invoke lzpura [tiedosto]                   │\n\
+    │    poetry run python app/lz78.py [vipu] [tiedosto]       │\n\
     └──────────────────────────────────────────────────────────┘\n\
-    \n\
-    Sovelluksen voi käynnistää myös ilman poetryn komentoja:\n\
-      python3 app/lz78.py [vipu] [tiedosto]\n\
     \n\
     Vivut:\n\
       -c{' ' * 10}pakkaa annettu tiedosto\n\

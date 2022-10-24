@@ -97,12 +97,8 @@ class TestHuffman(unittest.TestCase):
     
     ┌──────────────────────────────────────────────────────────┐
     │  Käyttö:                                                 │
-    │    poetry run invoke huffmanpakkaa [tiedosto]            │
-    │    poetry run invoke huffmanpura [tiedosto]              │
+    │    poetry run python app/huffman.py [vipu] [tiedosto]    │
     └──────────────────────────────────────────────────────────┘
-    
-    Sovelluksen voi käynnistää myös ilman poetryn komentoja:
-      python3 app/huffman.py [vipu] [tiedosto]
     
     Vivut:
       -c          pakkaa annettu tiedosto

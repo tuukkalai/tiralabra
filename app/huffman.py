@@ -61,47 +61,43 @@ def huffman_puu(solmut: dict):
     return huffman_binaari(solmut[0][0])
 
 
-def lue_tiedosto(tiedosto_nimi: str) -> None:
-    """Lue annettu tiedosto.
+def yhdista_teksti_ja_sanakirja(teksti: str, sanakirja: dict) -> None:
+    """Yhdistetään muodostettu sanakirja, pakattava teksti, sekä tarvittavat otsaketiedot.
+
+    Yhdistetty tiedosto koostuu seuraavista osista. Osien koot alla, jos koko on rajattu.
+
+    ┌────────────┬───────────────┬───────────┬────────────────────┬───────────────┐
+    │ Sanakirjan │ Ylimääräisten │ Sanakirja │ Pakattu teksti     │ Ylimääräiset  │
+    │ pituus     │ bittien määrä │           │                    │ bitit         │
+    └────────────┴───────────────┴───────────┴────────────────────┴───────────────┘
+    └─16 bittiä──┴───3 bittiä────┴───────────┴────────────────────┴──0-7 bittiä───┘
 
     Args:
-        tiedosto_nimi (str): Käsiteltävän tiedoston nimi.
-
-    Returns:
-        str: Palauttaa käsiteltävän tekstin tekstimuodossa.
-    """
-    with open(tiedosto_nimi) as tiedosto:
-        teksti = tiedosto.read()
-    return teksti
-
-
-def yhdista_teksti_ja_sanakirja(teksti: str, sanakirja: dict) -> None:
-    """Lisätään globaalin muuttujan (koodattava_teksti) alkuun info (3-bit) kuinka monta nollaa poistetaan sanakirjan lopusta. Sanakirja (Huffman puu) osuuden loppuun lisätään nollia niin, että tulee 8-bittiä nollia -> sanakirja loppuu ja pakattu teksti alkaa.
-    otsake = 3-bittiä,
-    sanakirja = tarvittava määrä tavuja, lopussa otsakkeen merkitsemä määrä nollia
-    erottaja = tavullinen nollia
-    pakattu_teksti = sanakirjan avulla koottu pakattava teksti
+        teksti (str): Pakattava teksti, syöte.
+        sanakirja (dict): Muodostettu sanakirja, jonka avulla syöte muutetaan pakatuksi tekstiksi.
     """
 
-    """TODO:
-    Pakatun tekstin pituuden lisääminen toiseen tavupariin saattaa ylittyä helposti (max. 65536).
-    Jos otetaan vain kolme bittiä, kuinka monta ylimääräistä nollaa (0-7) tulee mukaan ja poistetaan purettaessa?
-    """
     global koodattava_teksti
 
     pakattu_teksti = ""
     for c in teksti:
         pakattu_teksti += sanakirja[c]
 
-    ylimaaraiset_bitit = (3+len(koodattava_teksti)+len(pakattu_teksti)) % 8
+    ylimaaraiset_bitit = (3 + len(koodattava_teksti) + len(pakattu_teksti)) % 8
+
+    # print('yhdistä, sanakirjan_pituus', format(len(koodattava_teksti), "016b"))
+    # print('yhdistä, ylimääräisiä bittejä', format(ylimaaraiset_bitit, "03b"))
 
     koodattava_teksti = (
         format(len(koodattava_teksti), "016b")
         + format(ylimaaraiset_bitit, "03b")
         + koodattava_teksti
         + pakattu_teksti
-        + '0'*ylimaaraiset_bitit
+        + "0" * ylimaaraiset_bitit
     )
+
+    # print('pakattu_teksti', pakattu_teksti[:64])
+    # print("len(koodattava_teksti)", len(koodattava_teksti))
 
 
 def pakkaa(tiedosto_nimi: str) -> str:
@@ -111,7 +107,7 @@ def pakkaa(tiedosto_nimi: str) -> str:
         tiedosto_nimi (str): Käsiteltävän tiedoston nimi.
 
     Returns:
-        str: Palauttaa pakatun tiedoston nimen
+        str: Palauttaa pakatun tiedoston nimen.
     """
     global koodattava_teksti
 
@@ -121,6 +117,7 @@ def pakkaa(tiedosto_nimi: str) -> str:
     merkit = esiintyvyys_laskin(tiedosto_sisalto)
     solmut = merkit
     bitti_koodi_sanakirja = huffman_puu(solmut)
+    # print('sanakirja', bitti_koodi_sanakirja)
 
     yhdista_teksti_ja_sanakirja(tiedosto_sisalto, bitti_koodi_sanakirja)
 
@@ -137,10 +134,12 @@ def pakkaa(tiedosto_nimi: str) -> str:
 
 def pura(tiedosto_nimi: str) -> str:
     """Pakatun tiedoston purku.
-    Tiedoston sisältö luetaan muuttujaan teksti, josta siitä käsitellään binäärimuotoinen esitys.
+    Tiedoston sisältö luetaan muuttujaan tiedosto_sisalto, josta siitä käsitellään binäärimuotoinen esitys.
     Binäärimuotoisen tekstin kaksi ensimmäistä tavua (16 bittiä) kertoo kuinka pitkä sanakirja on.
-    Sanakirja käydään läpi postorder traversal algoritmilla, jolla saadaan palautettua dict tyyppinen sanakirja.
-    Sanakirjan ja lopun binäärimuotoisen "tekstin" avulla saadaan palautettua pakattu tiedosto.
+    Seuraavat 3 bittiä kertovat loppuun lisättyjen bittien määrän.
+    Sanakirja muodostetaan binääridatasta Postorder Traversal algoritmilla. Tuloksena dict tyyppinen sanakirja.
+    Sanakirjan ja binäärimuotoisen pakatun tekstin avulla saadaan palautettua pakattu tiedosto.
+    Purettu tiedosto tallennetaan TiedostoPalvelun avulla.
 
     Args:
         tiedosto_nimi (str): Purettava tiedosto
@@ -151,23 +150,30 @@ def pura(tiedosto_nimi: str) -> str:
 
     tiedosto = TiedostoPalvelu(tiedosto_nimi)
     tiedosto_sisalto = tiedosto.lue_tiedosto()
-    
+    # print(tiedosto_sisalto[:20])
+
     # Binäärimuotoinen esitys
     binaari_teksti = ""
     for tavu in tiedosto_sisalto:
         binaari_teksti += format(tavu, "08b")
 
+    # print("pura, binaari_teksti", binaari_teksti[:40])
+
+    # Poistetaan tiedot sanakirjan pituudesta ja loppuun lisätyistä ylimääräisistä biteistä
     sanakirjan_pituus = int(binaari_teksti[:16], 2)
     binaari_teksti = binaari_teksti[16:]
 
     ylimaaraiset_bitit = int(binaari_teksti[:3], 2)
     binaari_teksti = binaari_teksti[3:]
 
+    # print("sanakirjan_pituus", sanakirjan_pituus)
+    # print("ylimaaraiset_bitit", ylimaaraiset_bitit)
+
     sanakirja = {}
     apumuuttuja = ""
     bitti = 0
 
-    # Postorder traversal
+    # Muodostetaan Postorder traversal -algoritmilla binääridatasta sanakirja
     while bitti < sanakirjan_pituus:
         if binaari_teksti[bitti] == "0":
             apumuuttuja += "0"
@@ -180,7 +186,10 @@ def pura(tiedosto_nimi: str) -> str:
             apumuuttuja = apumuuttuja[:-1] + "1"
             bitti += 9
 
-    # Dekoodaus
+    # print('sisalto', binaari_teksti[sanakirjan_pituus:700])
+    # print(sanakirja)
+
+    # Dekoodataan sanakirjan avulla pakattu teksti
     apumuuttuja = ""
     dekoodattu_teksti = ""
     for bitti in binaari_teksti[sanakirjan_pituus:-ylimaaraiset_bitit]:
@@ -190,6 +199,8 @@ def pura(tiedosto_nimi: str) -> str:
                 list(sanakirja.values()).index(apumuuttuja)
             ]
             apumuuttuja = ""
+
+    # print('purettu teksti kirjoitettavaksi', dekoodattu_teksti[:64])
 
     tiedosto = tiedosto.kirjoita_tiedosto(dekoodattu_teksti, "w", "huffman")
     return str(tiedosto)

@@ -7,6 +7,7 @@ from tiedosto_palvelu import TiedostoPalvelu
 class TestHuffman(unittest.TestCase):
     def setUp(self):
         self.testi_teksti = "AABABABBBCBCBBABABBBAB"
+        self.testi_tiedosto = os.path.join(os.getcwd(), "data", "simple_test.txt")
 
     def test_esiintyvyyslaskin_palauttaa_listan_tupleja(self):
         sanakirja = huffman.esiintyvyys_laskin(self.testi_teksti)
@@ -47,17 +48,8 @@ class TestHuffman(unittest.TestCase):
         binaari = huffman.huffman_binaari("A", "001")
         self.assertEqual(binaari, {"A": "001"})
 
-    def test_tiedoston_lukeminen(self):
-        teksti = huffman.lue_tiedosto(
-            os.path.join(os.getcwd(), "data", "simple_test.txt")
-        )
-        self.assertEqual(
-            teksti, "AABABABCBCBDBDBABAAAACCACDCDCDAAACDCDAABCAACBACAAABCABDDCBABAA"
-        )
-
     def test_testitiedoston_pakkaaminen_tuottaa_pakatun_tiedoston(self):
-        tiedosto_nimi = os.path.join(os.getcwd(), "data", "simple_test.txt")
-        pakattu_tiedosto = huffman.pakkaa(tiedosto_nimi)
+        pakattu_tiedosto = huffman.pakkaa(self.testi_tiedosto)
 
         self.assertEqual(
             pakattu_tiedosto, os.path.join(os.getcwd(), "data", "simple_test.txt.huff")
@@ -65,8 +57,7 @@ class TestHuffman(unittest.TestCase):
 
     def test_testitiedoston_purkaminen_tuottaa_puretun_tiedoston(self):
         # Pakataan testitiedosto
-        tiedosto_nimi = os.path.join(os.getcwd(), "data", "simple_test.txt")
-        pakattu_tiedosto_nimi = huffman.pakkaa(tiedosto_nimi)
+        pakattu_tiedosto_nimi = huffman.pakkaa(self.testi_tiedosto)
 
         # Puretaan testitiedosto
         purettu_tiedosto_nimi = huffman.pura(pakattu_tiedosto_nimi)
@@ -76,18 +67,48 @@ class TestHuffman(unittest.TestCase):
             os.path.join(os.getcwd(), "data", "simple_test.txt.huff.purettu"),
         )
 
-    def test_testitiedoston_purkaminen_vastaa_alkuperaista_sisaltoa(self):
-        # Pakataan testitiedosto
-        tiedosto_nimi = os.path.join(os.getcwd(), "data", "simple_test.txt")
-        pakattu_tiedosto_nimi = huffman.pakkaa(tiedosto_nimi)
+    def pakkaa_ja_pura_tiedosto(self, tiedosto: str) -> tuple:
+        testi_tiedosto = os.path.join(os.getcwd(), "data", tiedosto)
+        pakattu_tiedosto_nimi = huffman.pakkaa(testi_tiedosto)
 
-        # Puretaan testitiedosto
         purettu_tiedosto_nimi = huffman.pura(pakattu_tiedosto_nimi)
         purettu_tiedosto_sisalto = TiedostoPalvelu(purettu_tiedosto_nimi).lue_tiedosto()
 
-        alkuperainen_sisalto = TiedostoPalvelu(tiedosto_nimi).lue_tiedosto()
+        alkuperainen_sisalto = TiedostoPalvelu(testi_tiedosto).lue_tiedosto()
 
-        self.assertEqual(purettu_tiedosto_sisalto, alkuperainen_sisalto)
+        return (alkuperainen_sisalto, purettu_tiedosto_sisalto)
+
+    def test_purettu_tiedosto_vastaa_alkuperaista_yksinkertainen(self):
+        (alkuperainen_sisalto, purettu_sisalto) = self.pakkaa_ja_pura_tiedosto(
+            "simple_test.txt"
+        )
+        self.assertEqual(alkuperainen_sisalto, purettu_sisalto)
+
+    # def test_purettu_tiedosto_vastaa_alkuperaista_pitka_tarina(self):
+    #     (alkuperainen_sisalto, purettu_sisalto) = self.pakkaa_ja_pura_tiedosto(
+    #         "canterbury_corpus/alice29.txt"
+    #     )
+    #     self.assertEqual(alkuperainen_sisalto, purettu_sisalto)
+
+    # def test_purettu_tiedosto_vastaa_alkuperaista_koodi(self):
+    #     (alkuperainen_sisalto, purettu_sisalto) = self.pakkaa_ja_pura_tiedosto(
+    #         "canterbury_corpus/fields.c"
+    #     )
+    #     self.assertEqual(alkuperainen_sisalto, purettu_sisalto)
+
+    def test_purettu_tiedosto_vastaa_alkuperaista_laulun_sanat(self):
+
+        testi_tiedosto = os.path.join(os.getcwd(), "data", "sia_cheap_thrills.txt")
+        alkuperainen_sisalto = TiedostoPalvelu(testi_tiedosto).lue_tiedosto()
+        print("sis", alkuperainen_sisalto[:20])
+
+        pakattu_tiedosto = huffman.pakkaa(testi_tiedosto)
+
+        purettu_tiedosto = huffman.pura(pakattu_tiedosto)
+
+        purettu_tiedosto_sisalto = TiedostoPalvelu(purettu_tiedosto).lue_tiedosto()
+
+        self.assertEqual(alkuperainen_sisalto, purettu_tiedosto_sisalto)
 
     def test_kayttoohje_nakyy_vivulla(self):
         tuloste = huffman.kayttoohje()

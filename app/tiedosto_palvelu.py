@@ -53,7 +53,7 @@ class TiedostoPalvelu:
         Returns:
                 bool: Palauttaa True, jos annettu tiedoston pääte on '.txt'
         """
-        return os.path.splitext(self.tiedosto)[1] in [".txt", ".purettu"]
+        return os.path.splitext(self.tiedosto)[1] in [".txt", ".purettu", ".c", ".lsp"]
 
     def __str__(self) -> str:
         return self.tiedosto

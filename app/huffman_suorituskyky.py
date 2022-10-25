@@ -14,21 +14,20 @@ def aja_purku_mittaus(tiedosto_sijainti: str) -> tuple:
 
 
 def paaohjelma():
-    testattava_joukko = "canterbury_corpus"
-    testattavat_tiedostot = [".txt"]
+    testitiedostojen_kansio = os.path.join(os.getcwd(), "data")
 
-    testitiedostojen_kansio = os.path.join(os.getcwd(), "data", testattava_joukko)
-
+    testattavat_tiedostot = [".txt", ".c", ".lsp"]
     testitiedostot = [
-        os.path.join(testitiedostojen_kansio, tiedosto)
-        for tiedosto in os.listdir(testitiedostojen_kansio)
+        os.path.join(hakemisto, tiedosto)
+        for hakemisto, hakemisto_nimi, tiedosto_nimi in os.walk(testitiedostojen_kansio)
+        for tiedosto in tiedosto_nimi
         if os.path.splitext(tiedosto)[1] in testattavat_tiedostot
     ]
-    testitiedostot = testitiedostot[0:1]
 
-    print("Tekstitiedostojen pakkaaminen Huffman-algoritmiä käyttäen")
     print()
-    print(f"{'Tiedosto':<30}{'Koko alkuperäisestä':<20}{'Aikaa käytetty':<20}")
+    print("Tekstitiedostojen pakkaaminen Huffman-algoritmia käyttäen")
+    print()
+    print(f"{'Tiedosto':<40}{'Koko alkuperäisestä':<25}{'Aikaa käytetty':<20}")
     for tiedosto in testitiedostot:
         aloitusaika = time.perf_counter()
         pakattu_tiedosto = aja_pakkaus_mittaus(tiedosto)
@@ -42,29 +41,30 @@ def paaohjelma():
         )
         aika = format((lopetusaika - aloitusaika) * 1000, ".2f") + " ms"
         print(
-            f"{os.path.basename(pakattu_tiedosto):<30}{tiedostokoko_alkuperaisesta:<20}{aika:<20}"
+            f"{os.path.basename(pakattu_tiedosto):<40}{tiedostokoko_alkuperaisesta:<25}{aika:<20}"
         )
     print()
     print("---")
     print()
-    print("Tekstitiedostojen purkaminen Huffman-algoritmiä käyttäen")
+    print("Tekstitiedostojen purkaminen Huffman-algoritmia käyttäen")
 
     testattavat_tiedostot = [".huff"]
     testitiedostot = [
-        os.path.join(testitiedostojen_kansio, tiedosto)
-        for tiedosto in os.listdir(testitiedostojen_kansio)
+        os.path.join(hakemisto, tiedosto)
+        for hakemisto, hakemisto_nimi, tiedosto_nimi in os.walk(testitiedostojen_kansio)
+        for tiedosto in tiedosto_nimi
         if os.path.splitext(tiedosto)[1] in testattavat_tiedostot
     ]
-    testitiedostot = testitiedostot[0:1]
 
     print()
-    print(f"{'Tiedosto':<30}{'Aikaa käytetty':<20}")
+    print(f"{'Tiedosto':<40}{'Aikaa käytetty':<20}")
     for tiedosto in testitiedostot:
         aloitusaika = time.perf_counter()
         purettu_tiedosto = aja_purku_mittaus(tiedosto)
         lopetusaika = time.perf_counter()
         aika = format((lopetusaika - aloitusaika) * 1000, ".2f") + " ms"
-        print(f"{os.path.basename(purettu_tiedosto):<30}{aika:<20}")
+        print(f"{os.path.basename(purettu_tiedosto):<40}{aika:<20}")
+    print()
 
 
 if __name__ == "__main__":

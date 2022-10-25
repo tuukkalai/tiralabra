@@ -23,7 +23,7 @@ Syötteinä ohjelmille voidaan antaa tekstimuotoista dataa. Ottaakseni huomioon 
 
 Pakkausalgoritmeillä pyritään pienentämään tiedoston vaatiman tilan määrä, ja [kurssin aiheiden](https://tiralabra.github.io/2022_p1/fi/aiheet/) pohjalta suositeltiin pakkausalgoritmien pakkaavan testitiedosto 40-60% alkuperäistä pienemmäksi.
 
-Alkuperäisen selvitystyön perusteella arvioisin järkeväksi algoritmien aika- ja tilavaativuuksien tavoitteeksi iso-O notaatiolla luokan _O(n)_.
+Alkuperäisen selvitystyön perusteella arvioisin järkeväksi algoritmien aika- ja tilavaativuuksien tavoitteeksi iso-O notaatiolla luokan *O(n)*.
 
 > Lähteet
 

@@ -24,6 +24,7 @@ def paaohjelma():
         for tiedosto in os.listdir(testitiedostojen_kansio)
         if os.path.splitext(tiedosto)[1] in testattavat_tiedostot
     ]
+    testitiedostot = testitiedostot[0:1]
 
     print("Tekstitiedostojen pakkaaminen Huffman-algoritmiä käyttäen")
     print()
@@ -54,6 +55,7 @@ def paaohjelma():
         for tiedosto in os.listdir(testitiedostojen_kansio)
         if os.path.splitext(tiedosto)[1] in testattavat_tiedostot
     ]
+    testitiedostot = testitiedostot[0:1]
 
     print()
     print(f"{'Tiedosto':<30}{'Aikaa käytetty':<20}")

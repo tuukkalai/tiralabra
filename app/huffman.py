@@ -82,17 +82,25 @@ def yhdista_teksti_ja_sanakirja(teksti: str, sanakirja: dict) -> None:
     erottaja = tavullinen nollia
     pakattu_teksti = sanakirjan avulla koottu pakattava teksti
     """
+
+    """TODO:
+    Pakatun tekstin pituuden lisääminen toiseen tavupariin saattaa ylittyä helposti (max. 65536).
+    Jos otetaan vain kolme bittiä, kuinka monta ylimääräistä nollaa (0-7) tulee mukaan ja poistetaan purettaessa?
+    """
     global koodattava_teksti
 
     pakattu_teksti = ""
     for c in teksti:
         pakattu_teksti += sanakirja[c]
 
+    ylimaaraiset_bitit = (3+len(koodattava_teksti)+len(pakattu_teksti)) % 8
+
     koodattava_teksti = (
         format(len(koodattava_teksti), "016b")
-        + format(len(pakattu_teksti), "016b")
+        + format(ylimaaraiset_bitit, "03b")
         + koodattava_teksti
         + pakattu_teksti
+        + '0'*ylimaaraiset_bitit
     )
 
 
@@ -143,7 +151,7 @@ def pura(tiedosto_nimi: str) -> str:
 
     tiedosto = TiedostoPalvelu(tiedosto_nimi)
     tiedosto_sisalto = tiedosto.lue_tiedosto()
-
+    
     # Binäärimuotoinen esitys
     binaari_teksti = ""
     for tavu in tiedosto_sisalto:
@@ -152,8 +160,8 @@ def pura(tiedosto_nimi: str) -> str:
     sanakirjan_pituus = int(binaari_teksti[:16], 2)
     binaari_teksti = binaari_teksti[16:]
 
-    pakatun_tekstin_pituus = int(binaari_teksti[:16], 2)
-    binaari_teksti = binaari_teksti[16:]
+    ylimaaraiset_bitit = int(binaari_teksti[:3], 2)
+    binaari_teksti = binaari_teksti[3:]
 
     sanakirja = {}
     apumuuttuja = ""
@@ -175,17 +183,13 @@ def pura(tiedosto_nimi: str) -> str:
     # Dekoodaus
     apumuuttuja = ""
     dekoodattu_teksti = ""
-    i = 0
-    for bitti in binaari_teksti[sanakirjan_pituus:]:
-        if i >= pakatun_tekstin_pituus:
-            break
+    for bitti in binaari_teksti[sanakirjan_pituus:-ylimaaraiset_bitit]:
         apumuuttuja += bitti
         if apumuuttuja in list(sanakirja.values()):
             dekoodattu_teksti += list(sanakirja.keys())[
                 list(sanakirja.values()).index(apumuuttuja)
             ]
             apumuuttuja = ""
-        i += 1
 
     tiedosto = tiedosto.kirjoita_tiedosto(dekoodattu_teksti, "w", "huffman")
     return str(tiedosto)

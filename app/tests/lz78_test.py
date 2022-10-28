@@ -13,17 +13,22 @@ class TestLZ(unittest.TestCase):
 
         self.assertTrue(os.path.isfile(pakattu_tiedosto_sijainti))
 
-    def test_lzpura_purkaa_pakatun_tiedoston_oikein(self):
-        pakattu_tiedosto_sijainti = lz78.pakkaa(self.tiedosto)
+    def pakkaa_ja_pura_tiedosto(self, tiedosto: str) -> tuple:
+        testi_tiedosto = os.path.join(os.getcwd(), "data", tiedosto)
+        pakattu_tiedosto_nimi = lz78.pakkaa(testi_tiedosto)
 
-        purettu_tiedosto_sijainti = lz78.pura(pakattu_tiedosto_sijainti)
-        purettu_tiedosto_sisalto = TiedostoPalvelu(
-            purettu_tiedosto_sijainti
-        ).lue_tiedosto()
+        purettu_tiedosto_nimi = lz78.pura(pakattu_tiedosto_nimi)
+        purettu_tiedosto_sisalto = TiedostoPalvelu(purettu_tiedosto_nimi).lue_tiedosto()
 
-        self.assertEqual(
-            TiedostoPalvelu(self.tiedosto).lue_tiedosto(), purettu_tiedosto_sisalto
+        alkuperainen_sisalto = TiedostoPalvelu(testi_tiedosto).lue_tiedosto()
+
+        return (alkuperainen_sisalto, purettu_tiedosto_sisalto)
+
+    def test_purettu_tiedosto_vastaa_alkuperaista_yksinkertainen(self):
+        (alkuperainen_sisalto, purettu_sisalto) = self.pakkaa_ja_pura_tiedosto(
+            "simple_test.txt"
         )
+        self.assertEqual(alkuperainen_sisalto, purettu_sisalto)
 
     def test_kayttoohje_nakyy_vivulla(self):
         tuloste = lz78.kayttoohje()

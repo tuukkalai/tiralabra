@@ -17,7 +17,9 @@ Tarkoituksena on tehdä komentoriviltä toimivat Huffman- ja Lempel-Ziv pakkausa
 
 > Mitä syötteitä ohjelma saa ja miten näitä käytetään?
 
-Syötteinä ohjelmille voidaan antaa tekstimuotoista dataa. Ottaakseni huomioon eri kielien eroja, käytän suomenkielisen tekstin (esim. Kalevala) lisäksi [Calgary corpus](https://en.wikipedia.org/wiki/Calgary_corpus) -kokoelmaa, joka on luotu juuri pakkausalgoritmien vertailua varten.
+Syötteinä ohjelmille voidaan antaa tekstimuotoista dataa.
+
+Ottaakseni huomioon eri kielien eroja, käytän ~~suomenkielisen tekstin (esim. Kalevala) lisäksi~~ [Calgary corpus](https://en.wikipedia.org/wiki/Calgary_corpus) -kokoelmaa, joka on luotu juuri pakkausalgoritmien vertailua varten.
 
 > Tavoitteena olevat aika- ja tilavaativuudet (m.m. O-analyysit)
 

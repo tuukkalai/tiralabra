@@ -3,13 +3,20 @@ from tiedosto_palvelu import TiedostoPalvelu
 
 
 def pakkaa(tiedosto_nimi: str) -> str:
-    """pakkaa() lukee annetun merkkijonon ja palauttaa LZ78-algoritmilla koodatun merkkijonon.
+    """Metodi pakkaa lukee annetun tiedoston sisällön ja palauttaa LZ78-algoritmilla pakatun tiedoston sijainnin.
+
+    Pakkausalgoritmi muodostaa ketjun sijainteja ja seuraavia merkkejä seuraavalla formaatilla:
+
+        ┌────────────────┬────────────────┬─────────────┐
+    ... │ Sijainti (MSB) │ Sijainti (LSB) │ Merkki      │ ...
+        └────────────────┴────────────────┴─────────────┘
+        └────8 bittiä────┴────8 bittiä────┴──8 bittiä───┘
 
     Args:
-        teksti (str): Syöte, annettu merkkijono
+        teksti (str): Pakattavan tiedoston nimi.
 
     Returns:
-        bytearray: Bittilista
+        str: Pakatun tiedoston nimi.
     """
     tiedosto = TiedostoPalvelu(tiedosto_nimi)
     tiedosto_sisalto = tiedosto.lue_tiedosto()
@@ -20,6 +27,8 @@ def pakkaa(tiedosto_nimi: str) -> str:
     seuraavat_merkit = []
     i = 0
     sijainti = 1
+
+    # Pakattavan tiedosto sisältö käydään läpi merkki merkiltä, ja lisätään sanakirjaan aiemmin tuntemattomat merkkijonot
     while i < len(tiedosto_sisalto):
         apumuuttuja += tiedosto_sisalto[i]
         if apumuuttuja not in sanakirja or (i + 1) == len(tiedosto_sisalto):
@@ -33,12 +42,19 @@ def pakkaa(tiedosto_nimi: str) -> str:
             apumuuttuja = ""
         i += 1
 
+    # Yhdistetään lista sijainteja ja merkkejä
     sijainti_merkki_lista = []
     for i in range(len(enkoodattavat_sijainnit)):
-        sijainti_merkki_lista.append(enkoodattavat_sijainnit[i])
+        sijainti_merkki_lista.append(
+            int(format(enkoodattavat_sijainnit[i], "016b")[:8], 2)
+        )
+        sijainti_merkki_lista.append(
+            int(format(enkoodattavat_sijainnit[i], "016b")[8:], 2)
+        )
         sijainti_merkki_lista.append(ord(seuraavat_merkit[i]))
+        # print(sijainti_merkki_lista[-3:])
 
-    tiedosto.kirjoita_tiedosto(sijainti_merkki_lista, "w+b")
+    tiedosto.kirjoita_tiedosto(sijainti_merkki_lista, "w+b", "lz")
     return str(tiedosto)
 
 
@@ -50,17 +66,22 @@ def pura(tiedosto_nimi: str) -> str:
     seuraavat_merkit = []
     sanakirja = []
     for i in range(len(tiedosto_sisalto)):
-        if i % 2 == 0:
-            sijainnit.append(tiedosto_sisalto[i])
-            if tiedosto_sisalto[i] == 0:
-                sanakirja.append(chr(tiedosto_sisalto[i + 1]))
+        if i % 3 == 0:
+            sijainti = int(
+                format(tiedosto_sisalto[i], "08b")
+                + format(tiedosto_sisalto[i + 1], "08b"),
+                2,
+            )
+            sijainnit.append(sijainti)
+            if sijainti == 0:
+                sanakirja.append(chr(tiedosto_sisalto[i + 2]))
             else:
                 sanakirja.append(
-                    str(sanakirja[tiedosto_sisalto[i] - 1])
-                    + chr(tiedosto_sisalto[i + 1])
+                    str(sanakirja[sijainti - 1]) + chr(tiedosto_sisalto[i + 2])
                 )
-        else:
+        elif i % 3 == 2:
             seuraavat_merkit.append(chr(tiedosto_sisalto[i]))
+
 
     tiedosto.kirjoita_tiedosto("".join(sanakirja))
     return str(tiedosto)

@@ -38,6 +38,8 @@ class TestLZ(unittest.TestCase):
     
     ┌──────────────────────────────────────────────────────────┐
     │  Käyttö:                                                 │
+    │    poetry run invoke lzpakkaa --tiedosto=[tiedosto]      │
+    │    poetry run invoke lzpura --tiedosto=[tiedosto]        │
     │    poetry run python app/lz78.py [vipu] [tiedosto]       │
     └──────────────────────────────────────────────────────────┘
     

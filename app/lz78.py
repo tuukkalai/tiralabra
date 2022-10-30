@@ -56,18 +56,16 @@ def pakkaa(tiedosto_nimi: str) -> str:
     # Yhdistetään lista sijainteja ja merkkejä
     sijainti_merkki_lista = []
     for i in range(len(enkoodattavat_sijainnit)):
-        pituus = '0' + str(len(format(i,'b'))) + 'b'
-        sijainti_merkki_lista.append(
-            format(enkoodattavat_sijainnit[i], pituus)
-        )
-        sijainti_merkki_lista.append(format(ord(seuraavat_merkit[i]), '08b'))
+        pituus = "0" + str(len(format(i, "b"))) + "b"
+        sijainti_merkki_lista.append(format(enkoodattavat_sijainnit[i], pituus))
+        sijainti_merkki_lista.append(format(ord(seuraavat_merkit[i]), "08b"))
 
     yhdistetty_binaari = "".join(sijainti_merkki_lista)
-    yhdistetty_binaari += '0'*(len(yhdistetty_binaari) % 8)
+    yhdistetty_binaari += "0" * (len(yhdistetty_binaari) % 8)
 
     tavutettu = []
     for i in range(0, len(yhdistetty_binaari), 8):
-        tavutettu.append(int(yhdistetty_binaari[i:i+8],2))
+        tavutettu.append(int(yhdistetty_binaari[i : i + 8], 2))
 
     tiedosto.kirjoita_tiedosto(tavutettu, "w+b", "lz")
     return str(tiedosto)
@@ -79,7 +77,7 @@ def pura(tiedosto_nimi: str) -> str:
 
     sisalto_arr = []
     for i in range(len(tiedosto_sisalto)):
-        sisalto_arr.append(format(tiedosto_sisalto[i], '08b'))
+        sisalto_arr.append(format(tiedosto_sisalto[i], "08b"))
 
     sisalto_bin = "".join(sisalto_arr)
 
@@ -91,20 +89,23 @@ def pura(tiedosto_nimi: str) -> str:
     j = 0
     while len(sisalto_bin) > 0:
         if i % 2 == 0:
-            pituus = len(format(j,'b'))
-            sijainti = int(sisalto_bin[:pituus],2)
+            pituus = len(format(j, "b"))
+            sijainti = int(sisalto_bin[:pituus], 2)
             sijainnit.append(sijainti)
-            if len(sisalto_bin) < pituus+8:
+            if len(sisalto_bin) < pituus + 8:
                 break
             if sijainti == 0:
-                kirjain = chr(int(sisalto_bin[pituus:pituus+8],2))
+                kirjain = chr(int(sisalto_bin[pituus : pituus + 8], 2))
                 sanakirja.append(kirjain)
             else:
-                sanakirja.append(str(sanakirja[sijainti-1]) + chr(int(sisalto_bin[pituus:pituus+8],2)))
+                sanakirja.append(
+                    str(sanakirja[sijainti - 1])
+                    + chr(int(sisalto_bin[pituus : pituus + 8], 2))
+                )
             sisalto_bin = sisalto_bin[pituus:]
             j += 1
         else:
-            kirjain = chr(int(sisalto_bin[:8],2))
+            kirjain = chr(int(sisalto_bin[:8], 2))
             seuraavat_merkit.append(kirjain)
             sisalto_bin = sisalto_bin[8:]
         i += 1
@@ -119,6 +120,8 @@ def kayttoohje():
     \n\
     ┌──────────────────────────────────────────────────────────┐\n\
     │  Käyttö:                                                 │\n\
+    │    poetry run invoke lzpakkaa --tiedosto=[tiedosto]      │\n\
+    │    poetry run invoke lzpura --tiedosto=[tiedosto]        │\n\
     │    poetry run python app/lz78.py [vipu] [tiedosto]       │\n\
     └──────────────────────────────────────────────────────────┘\n\
     \n\

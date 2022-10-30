@@ -18,6 +18,8 @@
 ### Muut
 
 - [Määrittelydokumentti](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/maarittelydokumentti.md)
+- [Toteutusdokumentti](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/toteutusdokumentti.md)
+- [Testausdokumentti](https://github.com/tuukkalai/tiralabra/blob/main/dokumentaatio/testausdokumentti.md)
 
 ## Projektin riippuvuudet
 
@@ -33,26 +35,36 @@ poetry install
 
 ## Projektin suorittaminen
 
-Aja tiedoston pakkaaminen Huffman-algoritmilla
+Pakkaa tiedosto Huffman-algoritmilla
 
 ```sh
-poetry run invoke huffmanpakkaa [tiedosto]
+poetry run invoke huffmanpakkaa --tiedosto=[tiedosto]
+# tai
+poetry run python app/huffman.py -c [tiedosto]
 ```
 
-Aja pakatun tiedoston purkaminen Huffman-algoritmilla
+Pura tiedosto Huffman-algoritmilla
 
 ```sh
-poetry run invoke huffmanpura [tiedosto]
+poetry run invoke huffmanpura --tiedosto=[tiedosto]
+# tai
+poetry run python app/huffman.py -d [tiedosto]
 ```
 
+Pakkaa tiedosto LZ78-algoritmilla
+
 ```sh
-poetry run invoke lzpakkaa [tiedosto]
+poetry run invoke lzpakkaa --tiedosto=[tiedosto]
+# tai
+poetry run python app/lz78.py -c [tiedosto]
 ```
 
-Aja pakatun tiedoston purkaminen Huffman-algoritmilla
+Pura tiedosto LZ78-algoritmilla
 
 ```sh
-poetry run invoke lzpura [tiedosto]
+poetry run invoke lzpura --tiedosto=[tiedosto]
+# tai
+poetry run python app/lz78.py -d [tiedosto]
 ```
 
 ## Muita hyödyllisiä komentoja
@@ -61,6 +73,14 @@ poetry run invoke lzpura [tiedosto]
 
 ```sh
 poetry run invoke test
+```
+
+### Suorituskykytestit
+
+Suorituskyvyn testaamista varten on hakemistoon `data` lisätty muutamia testitiedostoja, joita voidaan pakata ja purkaa seuraavalla komennolla
+
+```sh
+poetry run invoke suorituskyky
 ```
 
 ### Luo testikattavuuden raportti
@@ -79,4 +99,9 @@ poetry run invoke coverage-html
 
 ```sh
 poetry run invoke format
+```
+### Poista pakatut ja puretut tiedostot data-hakemistosta
+
+```sh
+poetry run invoke siivoa
 ```

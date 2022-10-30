@@ -1,0 +1,23 @@
+Huffman,,,
+Tiedosto,Koko alkuperäisestä,Pakkaaminen,Purkaminen
+simple_test.txt.huff,37.10 %,0.21 ms,0.28 ms             
+sia_cheap_thrills.txt.huff,59.21 %,2.20 ms,17.91 ms            
+jfk_virkaanastujaispuhe.txt.huff,55.28 %,4.37 ms,50.30 ms            
+alice29.txt.huff,55.65 %,54.67 ms,1177.97 ms          
+asyoulik.txt.huff,60.63 %,48.81 ms,1024.31 ms          
+fields.c.huff,64.04 %,6.18 ms,118.02 ms           
+grammar.lsp.huff,60.95 %,2.13 ms,31.77 ms            
+lcet10.txt.huff,57.17 %,167.74 ms,3681.58 ms
+plrabn12.txt.huff,55.26 %,188.18 ms,3867.94 ms
+,,,
+LZ78,,,
+Tiedosto,Koko alkuperäisestä,Pakkaaminen,Purkaminen
+simple_test.txt.lz,62.90 %,0.24 ms,0.22 ms             
+sia_cheap_thrills.txt.lz,65.61 %,3.66 ms,3.76 ms             
+jfk_virkaanastujaispuhe.txt.lz,64.90 %,8.41 ms,9.17 ms             
+alice29.txt.lz,51.61 %,147.78 ms,877.85 ms
+asyoulik.txt.lz,55.50 %,117.57 ms,601.21 ms
+fields.c.lz,57.87 %,15.48 ms,13.35 ms            
+grammar.lsp.lz,61.52 %,5.64 ms,3.64 ms   
+lcet10.txt.lz,48.24 %,377.78 ms,9475.40 ms
+plrabn12.txt.lz,51.14 %,521.74 ms,13605.34 ms

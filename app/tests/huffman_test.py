@@ -111,10 +111,12 @@ class TestHuffman(unittest.TestCase):
             """
     Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla
     
-    ┌──────────────────────────────────────────────────────────┐
-    │  Käyttö:                                                 │
-    │    poetry run python app/huffman.py [vipu] [tiedosto]    │
-    └──────────────────────────────────────────────────────────┘
+    ┌─────────────────────────────────────────────────────────────┐
+    │  Käyttö:                                                    │
+    │    poetry run invoke huffmanpakkaa --tiedosto=[tiedosto]    │
+    │    poetry run invoke huffmanpura --tiedosto=[tiedosto]      │
+    │    poetry run python app/huffman.py [vipu] [tiedosto]       │
+    └─────────────────────────────────────────────────────────────┘
     
     Vivut:
       -c          pakkaa annettu tiedosto

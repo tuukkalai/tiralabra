@@ -24,13 +24,13 @@ def paaohjelma():
         if os.path.splitext(tiedosto)[1] in testattavat_tiedostot
     ]
 
-    testitiedostot = [
-        "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/sia_cheap_thrills.txt",
-        "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/jfk_virkaanastujaispuhe.txt",
-        "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/simple_test.txt",
-        "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/canterbury_corpus/fields.c",
-        "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/canterbury_corpus/grammar.lsp",
-    ]
+    # testitiedostot = [
+    #     "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/sia_cheap_thrills.txt",
+    #     "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/jfk_virkaanastujaispuhe.txt",
+    #     "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/simple_test.txt",
+    #     "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/canterbury_corpus/fields.c",
+    #     "/home/tuukkala/Documents/koulu/Tietorakenteet_ja_algoritmit_labra_TKT20010/tiralabra/data/canterbury_corpus/grammar.lsp",
+    # ]
 
     print()
     print("Tekstitiedostojen pakkaaminen LZ78-algoritmia käyttäen")

@@ -1,3 +1,4 @@
+import os
 from invoke import task
 
 
@@ -35,8 +36,23 @@ def lzpura(ctx, tiedosto=None):
 
 @task(optional=['algoritmi'])
 def suorituskyky(ctx, algoritmi=['huffman, lz78']):
-    # if 'huffman' in algoritmi:
-    ctx.run('python app/huffman_suorituskyky.py')
+    if 'huffman' in algoritmi:
+        ctx.run('python app/huffman_suorituskyky.py')
+    elif 'lz78' in algoritmi:
+        ctx.run('python app/lz78_suorituskyky.py')
+    else:
+        ctx.run('python app/huffman_suorituskyky.py && python app/lz78_suorituskyky.py')
+
+@task
+def siivoa(ctx):
+    siivottavat = [
+        os.path.join(hakemisto, tiedosto)
+        for hakemisto, hakemisto_nimi, tiedosto_nimi in os.walk(os.path.join(os.getcwd(), 'data'))
+        for tiedosto in tiedosto_nimi
+        if os.path.splitext(tiedosto)[1] in ['.huff', '.lz', '.purettu']
+    ]
+    for tiedosto in siivottavat:
+        ctx.run(f'rm {tiedosto}')
 
 @task
 def test(ctx):

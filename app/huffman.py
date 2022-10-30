@@ -210,10 +210,12 @@ def kayttoohje():
     return f"\n\
     Tekstitiedoston pakkaaminen ja purkaminen Huffman-algoritmilla\n\
     \n\
-    ┌──────────────────────────────────────────────────────────┐\n\
-    │  Käyttö:                                                 │\n\
-    │    poetry run python app/huffman.py [vipu] [tiedosto]    │\n\
-    └──────────────────────────────────────────────────────────┘\n\
+    ┌─────────────────────────────────────────────────────────────┐\n\
+    │  Käyttö:                                                    │\n\
+    │    poetry run invoke huffmanpakkaa --tiedosto=[tiedosto]    │\n\
+    │    poetry run invoke huffmanpura --tiedosto=[tiedosto]      │\n\
+    │    poetry run python app/huffman.py [vipu] [tiedosto]       │\n\
+    └─────────────────────────────────────────────────────────────┘\n\
     \n\
     Vivut:\n\
       -c{' ' * 10}pakkaa annettu tiedosto\n\

@@ -1,0 +1,45 @@
+Huffman
+Tiedosto,Alkuperäinen koko (b),Pakattu koko (b),Koko alkuperäisestä,Aikaa käytetty      
+simple_test.txt.huff,62,23,37.10 %,0.22 ms             
+sia_cheap_thrills.txt.huff,2893,1713,59.21 %,1.83 ms             
+jfk_virkaanastujaispuhe.txt.huff,7430,4107,55.28 %,4.12 ms             
+alice29.txt.huff,152089,84641,55.65 %,60.55 ms            
+asyoulik.txt.huff,125179,75894,60.63 %,49.22 ms            
+fields.c.huff,11150,7141,64.04 %,4.94 ms             
+grammar.lsp.huff,3721,2268,60.95 %,1.99 ms             
+lcet10.txt.huff,426754,243983,57.17 %,165.44 ms           
+plrabn12.txt.huff,481861,266286,55.26 %,191.92 ms           
+
+Tiedosto,Aikaa käytetty      
+simple_test.txt.huff.purettu,0.28 ms             
+sia_cheap_thrills.txt.huff.purettu,17.62 ms            
+jfk_virkaanastujaispuhe.txt.huff.purettu,47.53 ms
+alice29.txt.huff.purettu,1199.18 ms          
+asyoulik.txt.huff.purettu,1055.84 ms          
+fields.c.huff.purettu,116.81 ms           
+grammar.lsp.huff.purettu,32.60 ms            
+lcet10.txt.huff.purettu,3760.01 ms          
+plrabn12.txt.huff.purettu,3930.70 ms          
+
+LZ78
+Tiedosto,Alkuperäinen koko (b),Pakattu koko (b),Koko alkuperäisestä,Aikaa käytetty      
+simple_test.txt.lz,62,39,62.90 %,0.20 ms             
+sia_cheap_thrills.txt.lz,2893,1898,65.61 %,3.51 ms             
+jfk_virkaanastujaispuhe.txt.lz,7430,4822,64.90 %,8.66 ms             
+alice29.txt.lz,152089,78490,51.61 %,131.55 ms           
+asyoulik.txt.lz,125179,69479,55.50 %,123.92 ms           
+fields.c.lz,11150,6452,57.87 %,10.69 ms            
+grammar.lsp.lz,3721,2289,61.52 %,4.07 ms             
+lcet10.txt.lz,426754,205864,48.24 %,365.68 ms           
+plrabn12.txt.lz,481861,246445,51.14 %,415.70 ms           
+
+Tiedosto,Aikaa käytetty      
+simple_test.txt.lz.purettu,0.23 ms             
+sia_cheap_thrills.txt.lz.purettu,4.68 ms             
+jfk_virkaanastujaispuhe.txt.lz.purettu,10.50 ms            
+alice29.txt.lz.purettu,877.14 ms           
+asyoulik.txt.lz.purettu,595.93 ms           
+fields.c.lz.purettu,12.08 ms            
+grammar.lsp.lz.purettu,3.51 ms
+lcet10.txt.lz.purettu,9220.75 ms          
+plrabn12.txt.lz.purettu,13407.21 ms         
